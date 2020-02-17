@@ -99,17 +99,7 @@
         data-bootstro-placement="bottom">
         <h2 style="padding-left: 15px;">
             <b>{{analysis_name}} </b> <span style="color: #bebebe">|</span>
-            {% if not autocorr %}
-                {% if data_file == "dataset1_2" %}
-                    {{ dataset_names[0] }} <span style="color: #9f9f9f">&</span> {{ dataset_names[1] }}
-                {% elif data_file == "dataset1" %}
-                    {{ dataset_names[0] }}
-                {% elif data_file == "dataset2" %}
-                    {{ dataset_names[1] }}
-                {% endif %}
-            {% else %}
-                {{ dataset_names[0] }}
-            {% endif %}
+            {{ dataset_names[0] }}
             <a id="help" href="#" ><span class="fa fa-question" aria-hidden="true" style="float: right; padding-top: 0px; padding-right: 10px; font-size: 1em;"></span></a>
         </h2>
     </div>

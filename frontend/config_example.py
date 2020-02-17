@@ -9,7 +9,7 @@ ROOTDIR = os.path.abspath(os.path.join(appdir, os.pardir))
 # http://flask.pocoo.org/docs/config/#configuring-from-files
 # -----------------------------------------------------------------------------
 
-SECRET_KEY = "MAKE_THIS_SECURE:https://pythonadventures.wordpress.com/2015/01/01/flask-generate-a-secret-key/"
+SECRET_KEY = "618ec6329e5ce6201b7965f96676927c"
 FLASH_MESSAGES = True
 
 # If these two are true, no emails are sent
@@ -21,7 +21,7 @@ TESTING = True
 # -----------------------------------------------------------------------------
 
 #  name of the app
-APP_NAME = 'Science Flask'
+APP_NAME = 'Bioce Webserver'
 # backend files
 BACKEND_FOLDER = os.path.join(ROOTDIR, 'backend')
 # what to use before user id as a string
@@ -34,9 +34,9 @@ UPLOAD_FOLDER = os.path.join(ROOTDIR, 'userData')
 FAILED_FOLDER = os.path.join(ROOTDIR, 'failedAnalyses')
 
 # max file size in upload 10 MB
-MAX_CONTENT_LENGTH = 1 * 1024 * 1024
+MAX_CONTENT_LENGTH = 10 * 1024 * 1024
 # max file size in upload as string
-MAX_FILE_SIZE = '1 MB'
+MAX_FILE_SIZE = '10 MB'
 # maximum number of studies allowed per user at any time-point
 ACTIVE_STUDY_PER_USER = 2
 # maximum number of studies allowed per user altogether (delete -> re-upload)
@@ -72,7 +72,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 # http://pythonhosted.org/Flask-Security/configuration.html
 # -----------------------------------------------------------------------------
 
-SECURITY_EMAIL_SENDER = "admin@example.com"
+SECURITY_EMAIL_SENDER = "wojciech.potrzebowski@biochemistry.lu.se"
 
 SECURITY_POST_LOGIN_VIEW = "profile"
 SECURITY_POST_REGISTER_VIEW = "profile"
@@ -106,9 +106,9 @@ SECURITY_MSG_PASSWORD_NOT_SET = ("No password is set for this user. Sign in "
 # Flask-Admin credentials
 # -----------------------------------------------------------------------------
 
-ADMIN_NAME = "Admin"
-ADMIN_EMAIL = "admin@example.com"
-ADMIN_PASSWORD = "something_strong"
+ADMIN_NAME = "BioceAdmin"
+ADMIN_EMAIL = "wojciech.potrzebowski@biochemistry.lu.se"
+ADMIN_PASSWORD = "hae2noongeeP"
 
 # -----------------------------------------------------------------------------
 # Flask-Mail

@@ -97,14 +97,11 @@ class UploadForm(FlaskForm):
     study_name = StringField('Name of the study', [InputRequired(),
                              Length(min=3,max=25), UniqueDatasetName()])
     dataset1 = FileField('Dataset file 1', [DataRequired(file_sel),
-                         ExtensionCheck(exts=['.txt','.csv'])])
-    dataset1_type = StringField('Type of dataset 1', [InputRequired(),
-                                Length(min=3,max=25)])
-    autocorr = BooleanField('More than one dataset')
-    dataset2 = FileField('Dataset file 2', [RequiredIf(['autocorr'],
-                         message=file_sel), ExtensionCheck(exts=['.txt','.csv'],
-                         required='autocorr')])
-    dataset2_type = StringField('Type of dataset 2', [RequiredIf(['autocorr'])])
+                         ExtensionCheck(exts=['.dat','.txt'])])
+    dataset2 = FileField('Dataset file 2', [DataRequired(file_sel),
+                                            ExtensionCheck(exts=['.zip', '.gz'])])
+    dataset3 = FileField('Dataset file 3', [DataRequired(file_sel),
+                                            ExtensionCheck(exts=['.txt', '.sim'])])
     tc = BooleanField('Terms and conditions', [BooleanRequired()])
 
     # hidden field to indicate from the client side when sending the AJAX POST
@@ -119,9 +116,8 @@ class UploadForm(FlaskForm):
             max_size = app.config['MAX_CONTENT_LENGTH']
             seen = set()
             files = [self.dataset1]
-            # if autocorr is clicked we need all 4 files to be  diff
-            if self.autocorr.data:
-                files += [self.dataset2]
+            files += [self.dataset2]
+            files += [self.dataset3]
             for field in files:
                 # since we don't submit a proper file object just the name of
                 # the files we can't access the .filename, so we just use the

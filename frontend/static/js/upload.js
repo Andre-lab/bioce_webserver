@@ -6,21 +6,6 @@ $(document).ready(function() {
     hideErrorPanels();
     $("#misformatted").hide();
 
-    // hide secondary data panels on start, then update according to checkboxes
-    $("#dataset_panel2").hide();
-    conditional_autocorr();
-
-    // make conditional fields conditionally appear
-    function conditional_autocorr(){
-        if(document.getElementById('autocorr').checked) {
-            $("#dataset_panel2").show();
-        } else {
-            $("#dataset_panel2").hide();
-        }
-    }
-
-    $('#autocorr').click(conditional_autocorr);
-
     // booleans to make the server side validation bullet-proof by killing previous AJAX calls
     var request;
     // boolean to prevent submitting the form multiple times

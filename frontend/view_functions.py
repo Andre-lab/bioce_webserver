@@ -74,14 +74,10 @@ def save_study_to_db(files_dict, form):
     """
     study = models.Studies(author=current_user,
                            study_name=secure_filename(form.study_name.data),
-                           # if the autocorr checkbox is ticked we have two
-                           # datasets, so it's not autocorr, so we save false
-                           autocorr=not bool(form.autocorr.data),
                            dataset1_type=form.dataset1_type.data,
+                           dataset2_type=form.dataset2_type.data,
+                           dataset3_type=form.dataset3_type.data,
                            timestamp=datetime.datetime.utcnow())
-    # if we have two files, save the name of the 2nd as well
-    if form.autocorr.data:
-        setattr(study, 'dataset2_type', form.dataset2_type.data)
 
     # save the path to the files
     for field, f in files_dict.items():
@@ -152,7 +148,7 @@ def write_params_file(folders, form, study_id):
         params.write("%s,%s\n" % (k, v))
 
     # write studies
-    study_fields = ['autocorr', 'dataset1', 'dataset2']
+    study_fields = ['dataset1', 'dataset2', 'dataset3']
     for i, f in enumerate(study_fields):
         field = getattr(study, f)
         if field is not None:
@@ -208,12 +204,12 @@ def get_studies_array():
 
         # get files of study
         params = []
-        params.append({'field':'Multi-omics study', 'value': not study.autocorr})
+        params.append({'field':'Multi-omics study', 'value': False})
         study_dict['params'] = params
 
         files = []
-        files_names = ['Dataset 1', 'Dataset 2']
-        files_fields = ['dataset1', 'dataset2']
+        files_names = ['Dataset 1', 'Dataset 2', 'Dataset 3']
+        files_fields = ['dataset1', 'dataset2', 'dataset3']
         for i, f in enumerate(files_fields):
             field = getattr(study, f)
             if field is not None:
@@ -239,10 +235,7 @@ def get_analyses_array():
         analysis_dict['analysis_name'] = analysis.analysis_name
         study = models.Studies.query.get(analysis.study_id)
         study_name = study.study_name
-        if bool(study.autocorr):
-            analysis_dict['data_file'] = 'dataset1'
-        else:
-            analysis_dict['data_file'] = 'dataset1_2'
+        analysis_dict['data_file'] = 'dataset1_2'
         analysis_dict['status'] = analysis.status
 
         # build path for results .zip file

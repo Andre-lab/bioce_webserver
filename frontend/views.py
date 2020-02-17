@@ -324,7 +324,7 @@ def vis(user_id, analysis_id, data_file):
     if not security_check(user_id, analysis_id, True):
         abort(403)
 
-    if data_file not in ['dataset1_2', 'dataset1', 'dataset2']:
+    if data_file not in ['dataset1_2', 'dataset1', 'dataset2', 'dataset3']:
         abort(403)
 
     # get study_folder, i.e. location of dashboard.js and dashboard.json
@@ -335,18 +335,11 @@ def vis(user_id, analysis_id, data_file):
     username = app.config['USER_PREFIX'] + str(current_user.id)
     analysis_folder = os.path.join(username, secure_filename(study_name),
                                    secure_filename(analysis_name))
-    autocorr = bool(study.autocorr)
-    dataset_names = [study.dataset1_type]
-    if autocorr:
-        dataset_names += study.dataset1_type
-    else:
-        dataset_names += [study.dataset2_type]
 
     return render_template('vis.html', analysis_folder=analysis_folder,
-                           analysis_name=analysis_name, autocorr=autocorr,
+                           analysis_name=analysis_name,
                            user_id=user_id, analysis_id=analysis_id,
-                           data_file=data_file,
-                           dataset_names=dataset_names)
+                           data_file=data_file)
 
 # =============================================================================
 #

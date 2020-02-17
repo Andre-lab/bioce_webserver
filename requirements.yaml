@@ -1,0 +1,26 @@
+name: bioce_web
+channels:
+- conda-forge
+- anaconda
+- defaults
+- intel
+dependencies:
+- celery
+- flask
+- flask-mail
+- flask-sqlalchemy
+- flask-login
+- flask-security
+- flask-admin
+- flask-migrate
+- requests
+- rabbitmq-server
+- seaborn
+- clang
+- openmp
+- swig
+- gsl
+- pip:
+  - pystan
+  - pandas
+  - git+https://github.com/emblsaxs/sasciftools.git

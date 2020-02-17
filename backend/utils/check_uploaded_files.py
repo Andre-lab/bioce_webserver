@@ -33,8 +33,8 @@ def check_files(user_data_folder, files_dict, form):
     datasets = ['dataset1']
     samples = []
     probes = []
-    if not autocorr:
-        datasets.append('dataset2')
+    datasets.append('dataset2')
+    datasets.append('dataset3')
 
     for dataset in datasets:
         # check if we can open the file
@@ -73,15 +73,6 @@ def check_files(user_data_folder, files_dict, form):
         # save imputed, all-numeric dataset
         df_numeric.to_csv(dataset_path, sep=sep)
 
-    # if we have two datasets check if we have enough intersecting columns
-    min_intersecting = app.config['INTERSECTING_SAMPLES']
-    if not autocorr:
-        samples_intersect = np.intersect1d(samples[0], samples[1])
-        if samples_intersect.shape[0] <= min_intersecting:
-            format_errors[dataset] = ['Datasets must have at least %s shared '
-                                      'samples.' % min_intersecting]
-            clear_up_study(study_folder)
-            return False, format_errors
 
     # everything went fine, every file is checked
     return True, format_errors

@@ -77,6 +77,7 @@ class Studies(db.Model):
     autocorr = db.Column(db.Boolean())
     dataset2 = db.Column(db.String(255))
     dataset2_type = db.Column(db.String(30))
+    #dataset3 = db.Column(db.String(255))
     timestamp = db.Column(db.DateTime)
     analyses = db.relationship('Analyses', backref='study', lazy='dynamic')
 

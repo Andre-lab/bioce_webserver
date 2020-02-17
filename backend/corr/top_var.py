@@ -9,8 +9,8 @@ def top_variance(params):
     """
     datasets = ['dataset1']
     feat_num = params['feat_num']
-    if not params['autocorr']:
-        datasets.append('dataset2')
+    datasets.append('dataset2')
+    datasets.append('dataset3')
     for dataset in datasets:
         path = os.path.join(params['study_folder'], params[dataset])
         X, sep = open_file(path)
