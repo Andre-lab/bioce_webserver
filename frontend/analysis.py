@@ -5,8 +5,7 @@ import traceback
 from celery.exceptions import Terminated
 from flask_mail import Message
 
-from backend.corr import corr
-from backend.corr import top_var
+#from backend.bioce import run_bioce_pipeline
 from backend.utils import io_params
 from frontend import app, db, models, create_celery_app, mail
 
@@ -44,21 +43,19 @@ def run_analysis(current_user_id):
         failed_folder = app.config['FAILED_FOLDER']
 
         # ----------------------------------------------------------------------
-        # TOP VARIANCE FEATURES
+        # INTERFACE TO BAYESIAN ANALYSIS
         # ----------------------------------------------------------------------
 
         try:
+            #TODO: provide access to functions here
             params = top_var.top_variance(params)
             # if we exited gracefully, just let the user know
             if not params['fs_done']:
                 delete_analysis(analysis_id, analysis_folder, failed_folder)
-                subject = 'Your CorrMapper job could not be completed'
+                subject = 'Your BIOCE job could not be completed'
                 message = \
                     ('Your analysis (named: %s) could not be completed '
-                     'because could not select the chosen number  of top '
-                     'variance features from your datasets. \n\n You can try to'
-                     'upload a different dataset or choose a different number '
-                     'for top variance in the analysis submission form.'
+                     '\n\n You can try to upload a different or corrected dataset'
                      '\n%s Team' % analysis.analysis_name, app_name, )
                 send_mail(user.email, user.first_name, analysis.analysis_name,
                           subject, message)
@@ -72,35 +69,6 @@ def run_analysis(current_user_id):
                              '\n%s' % (analysis_id, traceback.format_exc()))
             return False
 
-        # ----------------------------------------------------------------------
-        # CALCULATE CORR NETWORK, P-VALUES, WRITE JS VARS AND DATA FOR VIS
-        # ----------------------------------------------------------------------
-
-        try:
-            params = corr.corr_main(params)
-            if not params['corr_done']:
-                delete_analysis(analysis_id, analysis_folder, failed_folder)
-                subject = 'Your %s job could not be completed' % app_name
-                message = \
-                    ('Your analysis (named: %s) could not be completed '
-                     'because one of the correlation matrices returned by the'
-                     'GLASSO algorithm is empty. This could happen if you have'
-                     'very few samples, select overly harsh p-value cut-off, or'
-                     'the selected feature selection algorithm did not find'
-                     'enough relevant features.\n\n You can try to run '
-                     '%s with a different metadata variable, feature '
-                     'selection method, or dataset.'
-                     '\n%s Team'
-                     % analysis.analysis_name, app_name, app_name)
-                send_mail(user.email, user.first_name, analysis.analysis_name,
-                          subject, message)
-                return False
-        except:
-            delete_analysis(analysis_id, analysis_folder, failed_folder)
-            send_fail_mail(user.email, user.first_name, analysis.analysis_name)
-            app.logger.error('Correlation calculation failed for analysis: %d'
-                             '\n%s' % (analysis_id, traceback.format_exc()))
-            return False
 
         # ----------------------------------------------------------------------
         # ZIP RESULTS FOLDER, DELETE OUTPUT FOLDER
