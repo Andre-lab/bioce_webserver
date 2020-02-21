@@ -96,9 +96,9 @@ def open_file(file_path, **kwargs):
     Opens files based on their file extension in pandas
     """
     filename, extension = os.path.splitext(file_path)
-    if extension == '.txt':
-        sep = '\t'
-    else:
-        sep = ','
-    file = pd.read_csv(file_path, sep=sep, index_col=0, **kwargs)
+    #There is additional check in the code
+    if extension == '.txt' or  extension == '.dat':
+        sep = ' '
+        #READ .txt, dat, zip and tar file
+        file = pd.read_csv(file_path, sep=sep, index_col=0, **kwargs)
     return file, sep

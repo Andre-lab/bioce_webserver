@@ -1,0 +1,16 @@
+name: bioce
+channels:
+- conda-forge
+- anaconda
+- defaults
+- intel
+dependencies:
+- seaborn
+- clang
+- openmp
+- swig
+- gsl
+- pip:
+  - pystan==2.18.0
+  - pandas
+  - git+https://github.com/emblsaxs/sasciftools.git
