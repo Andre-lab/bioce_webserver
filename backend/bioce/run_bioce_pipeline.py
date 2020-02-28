@@ -42,7 +42,6 @@ def simulate_profiles(pdb_list_name, experimental_filename):
     :param experimental_filename:
     :return:
     """
-    pdb_list = open(pdb_list_name).readlines()
     experimental_file = experimental_filename
     generate_file_list(pdb_list_name)
     generate_weights(pdb_list_name)
@@ -97,30 +96,31 @@ def run_variational(simulated, priors, experimental, output, file_list, weight_c
 
     vbi.produce_final_output(output, file_list)
 
-def process_variational(vbi_output):
+def process_variational(vbi_output_file, simulated_file, priors_file, names_file):
     """
 
     :param vbi_output:
     :return:
     """
 
-    simulated_file = 'SimulatedIntensities.txt'
-    names_file = 'FileNamesVBI.txt'
-    intensities = read_file_safe(simulated_file])
-    vbi_output = read_file_safe(sys.argv[1])
+    trm_simulated_file = 'trm_'+simulated_file
+    trm_priors_file = 'trm_'+priors_file
+    trm_names_file = 'trm_'+names_file
+    intensities = read_file_safe(simulated_file)
+    vbi_output = read_file_safe(vbi_output_file)
     last_output = vbi_output[-1][:-4]
-    file_list = read_file_safe(sys.argv[3], 'unicode')
+    file_list = read_file_safe(names_file, 'unicode')
 
     nonzero_indexes = np.nonzero(last_output > 0.0)
-    print(nonzero_indexes)
 
     output_intensities = intensities[:, nonzero_indexes[0]]
     output_filelist = file_list[last_output > 0.0]
+    flat_weights = (1.0 / len(nonzero_indexes)) * np.ones(len(nonzero_indexes))
+    savetext(trm_names_file, output_filelist)
+    np.savetxt(trm_simulated_file, output_intensities)
+    np.savetxt(trm_priors_file, flat_weights)
 
-    savetext('file_sub.txt', output_filelist)
-    np.savetxt(simulated_file, output_intensities)
-
-    return simulated_file, priors_file, names_file
+    return trm_simulated_file, trm_priors_file, trm_names_file
 
 def run_complete(simulated_file, priors_file, experimental_file, output_name, names_file):
     """
@@ -168,9 +168,17 @@ if __name__ == "__main__":
     output = 'output.txt'
     file_list = 'file_list'
     #We need to intrdduce some heuristic here
-    weight_cut = 0.1
+    #TODO: need to extract pdb_files (need to set up a size limit)
+
+    pdb_list = open(pdb_files).readlines()
+    number_of_structures = len(pdb_list)
+    maximum_cut = 0.01
+    winvert = 1.0/number_of_structures
+    weight_cut = winvert if winvert < maximum_cut else maximum_cut
 
     simulate_profiles(pdb_files, experimental)
-    run_variational(simulated, priors, experimental, output, file_list, weight_cut)
-    process_varitional()
-    run_complete()
+    #TODO: make sure this waits until completeed
+    run_variational(simulated, priors, experimental, 'vbi_'+output, file_list, weight_cut)
+    simulated, priors, file_list = process_variational(output, simulated, priors, file_list)
+
+    run_complete(simulated, priors, experimental, 'cbi_'+output, file_list)
