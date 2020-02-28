@@ -1,5 +1,5 @@
 #!/bin/bash
-CONDA_DIR=$HOME/anaconda3/envs/bioce/
+CONDA_DIR=$HOME/anaconda3/envs/bioce_web/
 
 swig -python -c++ -o vbw_sc_wrap.cpp vbw_sc.i
 clang -O3 -fPIC -c VBW_sc.cpp -fpic -fopenmp -std=c++11 -I$CONDA_DIR/include

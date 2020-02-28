@@ -8,6 +8,7 @@ from preparePepsi import (
 )
 import variationalBayesian as vbi
 import fullBayesian as cbi
+import zipfile
 import numpy as np
 import os
 
@@ -68,12 +69,12 @@ def run_variational(simulated, priors, experimental, output, file_list, weight_c
     number_of_cs_measures = 1
     ncurves = 1
     restart = 0
-    structure_energies = None
+    structure_energies = 'None'
     nprocs = 4
     skip_vbw = 0
-    cs_simulated = None
-    cs_rms = None
-    cs_experimental = None
+    cs_simulated = 'None'
+    cs_rms = 'None'
+    cs_experimental = 'None'
 
     vbi.vbwSC.run_vbw(
         restart,
@@ -163,22 +164,23 @@ def run_complete(simulated_file, priors_file, experimental_file, output_name, na
 if __name__ == "__main__":
     pdb_files = 'pdbs.zip'
     simulated = 'SimulatedIntensities.txt'
-    priors = 'flat_wghts.txt'
+    priors = 'weights.txt'
     experimental = 'experimental.dat'
     output = 'output.txt'
     file_list = 'file_list'
     #We need to intrdduce some heuristic here
-    #TODO: need to extract pdb_files (need to set up a size limit)
 
-    pdb_list = open(pdb_files).readlines()
+    with zipfile.ZipFile(pdb_files, 'r') as zipObj:
+        zipObj.extractall()
+        pdb_list = zipObj.namelist()
     number_of_structures = len(pdb_list)
     maximum_cut = 0.01
     winvert = 1.0/number_of_structures
     weight_cut = winvert if winvert < maximum_cut else maximum_cut
 
-    simulate_profiles(pdb_files, experimental)
+    simulate_profiles(pdb_list, experimental)
     #TODO: make sure this waits until completeed
     run_variational(simulated, priors, experimental, 'vbi_'+output, file_list, weight_cut)
-    simulated, priors, file_list = process_variational(output, simulated, priors, file_list)
+    simulated, priors, file_list = process_variational('vbi_'+output, simulated, priors, file_list)
 
     run_complete(simulated, priors, experimental, 'cbi_'+output, file_list)
