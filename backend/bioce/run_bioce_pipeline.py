@@ -13,14 +13,14 @@ import numpy as np
 import os
 
 
-def read_file_safe(filename, dtype="float64"):
+def read_file_safe(filename, dtype="float64", skip_lines=0):
     """
     Simple check if file exists
     :param filename:
     :return:
     """
     try:
-        results = np.genfromtxt(filename, dtype=dtype)
+        results = np.genfromtxt(filename, dtype=dtype, skip_footer=skip_lines)
     except IOError as err:
         print(os.strerror(err.errno))
     return results
@@ -108,15 +108,16 @@ def process_variational(vbi_output_file, simulated_file, priors_file, names_file
     trm_priors_file = 'trm_'+priors_file
     trm_names_file = 'trm_'+names_file
     intensities = read_file_safe(simulated_file)
-    vbi_output = read_file_safe(vbi_output_file)
+    vbi_output = read_file_safe(vbi_output_file, skip_lines=5)
     last_output = vbi_output[-1][:-4]
     file_list = read_file_safe(names_file, 'unicode')
 
     nonzero_indexes = np.nonzero(last_output > 0.0)
-
+    nonzeros = len(nonzero_indexes[0])
     output_intensities = intensities[:, nonzero_indexes[0]]
     output_filelist = file_list[last_output > 0.0]
-    flat_weights = (1.0 / len(nonzero_indexes)) * np.ones(len(nonzero_indexes))
+    flat_weights = (1.0 / nonzeros) * np.ones(nonzeros)
+    print("Flat weights", flat_weights)
     savetext(trm_names_file, output_filelist)
     np.savetxt(trm_simulated_file, output_intensities)
     np.savetxt(trm_priors_file, flat_weights)
@@ -134,11 +135,11 @@ def run_complete(simulated_file, priors_file, experimental_file, output_name, na
     :param weight_cut:
     :return:
     """
-    njobs = 4
+    njobs = 1
     iterations = 2000
-    chains = 4
+    chains = 1
 
-    output_file = open(output_name)
+    output_file = open(output_name,'w')
     # Files loading
     experimental = cbi.read_file_safe(experimental_file)
     simulated = cbi.read_file_safe(simulated_file)
@@ -156,7 +157,8 @@ def run_complete(simulated_file, priors_file, experimental_file, output_name, na
     bayesian_weights, jsd, crysol_chi2 = cbi.calculate_stats(fit, experimental, simulated)
     #TODO: Write it to log somewhere
     for index, fname in enumerate(file_names):
-                output_file.write((fname, bayesian_weights[index]))
+        print(fname, bayesian_weights[index])
+        #output_file.write((fname, bayesian_weights[index]))
     print("JSD: " + str(jsd))
     print("Chi2 SAXS:" + str(crysol_chi2))
 
@@ -165,7 +167,7 @@ if __name__ == "__main__":
     pdb_files = 'pdbs.zip'
     simulated = 'SimulatedIntensities.txt'
     priors = 'weights.txt'
-    experimental = 'experimental.dat'
+    experimental = 'simulated.dat'
     output = 'output.txt'
     file_list = 'file_list'
     #We need to intrdduce some heuristic here
@@ -179,8 +181,9 @@ if __name__ == "__main__":
     weight_cut = winvert if winvert < maximum_cut else maximum_cut
 
     simulate_profiles(pdb_list, experimental)
-    #TODO: make sure this waits until completeed
-    run_variational(simulated, priors, experimental, 'vbi_'+output, file_list, weight_cut)
+    #TODO: Added for testing purposes. Will remove it from proudction code
+    simulated = 'SimulatedIntensitiesTest.txt'
+    #run_variational(simulated, priors, experimental, 'vbi_'+output, file_list, weight_cut)
     simulated, priors, file_list = process_variational('vbi_'+output, simulated, priors, file_list)
 
     run_complete(simulated, priors, experimental, 'cbi_'+output, file_list)
