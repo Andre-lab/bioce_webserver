@@ -32,10 +32,10 @@ def process_pdbs_with_experimental(pdb_list, experimental_file):
         proc = Popen(shlex.split(cmd_line), stdout=PIPE, shell=False)
         os.waitpid(proc.pid, 0)
         (out, err) = proc.communicate()
-        data = read_file_safe(pdb_file[:-5] + "-" + experimental_file[:-3] + "fit", 6)
+        data = read_file_safe(pdb_file[:-4] + "-" + experimental_file[:-3] + "fit", 6)
         intensity = data[:, 3]
         qvector = data[:, 0]
-        log_file = open(pdb_file[:-5] + "-" + experimental_file[:-3] + "log")
+        log_file = open(pdb_file[:-4] + "-" + experimental_file[:-3] + "log")
         log_data = log_file.readlines()[62]
         log_file.close()
         if log_data[:7] != "Scaling":
