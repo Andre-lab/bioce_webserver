@@ -74,10 +74,11 @@ class Studies(db.Model):
     study_name = db.Column(db.String(30))
     dataset1 = db.Column(db.String(255))
     dataset1_type = db.Column(db.String(30))
-    autocorr = db.Column(db.Boolean())
+    skip_variational = db.Column(db.Boolean())
     dataset2 = db.Column(db.String(255))
     dataset2_type = db.Column(db.String(30))
-    #dataset3 = db.Column(db.String(255))
+    dataset3 = db.Column(db.String(255))
+    dataset3_type = db.Column(db.String(30))
     timestamp = db.Column(db.DateTime)
     analyses = db.relationship('Analyses', backref='study', lazy='dynamic')
 

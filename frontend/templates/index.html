@@ -9,21 +9,27 @@
 
             <p>
                 <b>Bioce</b> is a method based on Bayesian statistics that infers conformational ensembles
-                from a structural library and experimental Small Angle Scattering data (SAXS or SANS).
+                from a pre-generated structural models and experimental
+                Small Angle Scattering data (SAXS or SANS).
+            </p>
+             <p>
                 The first stage of the method involves a fast model selection approach based
                 on variational Bayesian inference that maximizes the model evidence of the selected ensemble.
                 This is followed by a complete Bayesian inference of population weights in the selected ensemble.
-
-            <p>To proceed <a href="{{ url_for('upload') }}">upload</a> your experimental SAXS/SANS data and a set of
-            externally generated structural models.
-                </p>
             </p>
+            <p> To infer confromational ensemble from SAS data:
+            <a class="btn btn-info btn-normal btn-block" href="{{ url_for('upload') }}">
+             <i class="fa fa-upload" aria-hidden="true"></i>
+            Upload your files</a>
+            </p>
+
         </div>
     </div>
     <div class="col-md-6">
         <div class="jumbotron col-md-12">
             <p>
-                The method is also avaialable as a standalone tool. Installation instructions, documentation and running examples can be found at:
+                The method is also avaialable as a standalone tool. Installation instructions, documentation
+                and running examples can be found at:
                 <a class="btn btn-info btn-normal btn-block" href="https://andre-lab.github.io/bioce/">
                     <i class="fa fa-download" aria-hidden="true"></i>
                 Bioce website</a>
@@ -32,16 +38,12 @@
             <p>
                 The decription of the algorithms used in the method can be found in the paper: Potrzebowski et al.
                 PLoS Computational Biology. 14, 12, e1006641. Dec 2018)
-            </p>
-            <p>
                 <a class="btn btn-info btn-normal btn-block" href="https://doi.org/10.1371/journal.pcbi.1006641" target="_blank">
-                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-                    <span class="introtext">Read the paper</span> </a>
+                    <i class="glyphicon glyphicon-list-alt" aria-hidden="true"></i>
+                    Read the paper </a>
             </p>
             <p>
                 For more info, documentation and source code please go to:
-            </p>
-            <p>
                 <a class="btn btn-info btn-normal btn-block" href="https://github.com/Andre-lab/bioce">
                     <i class="fa fa-github"  aria-hidden="true"></i>
                 Github repo</a>

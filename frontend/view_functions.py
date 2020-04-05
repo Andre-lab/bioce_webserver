@@ -148,18 +148,12 @@ def write_params_file(folders, form, study_id):
         params.write("%s,%s\n" % (k, v))
 
     # write studies
-    study_fields = ['dataset1', 'dataset2', 'dataset3']
+    study_fields = ['dataset1', 'dataset2', 'dataset3', 'skip_variational']
     for i, f in enumerate(study_fields):
         field = getattr(study, f)
         if field is not None:
             params.write(f + ',' + str(field) + '\n')
 
-    # write params
-    param_fields = ['alpha_val', 'multi_corr_method', 'feat_num']
-    for p in param_fields:
-        field = getattr(form, p).data
-        if field is not None:
-            params.write(p + ',' + str(field) + '\n')
     params.close()
 
 
