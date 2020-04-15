@@ -48,9 +48,9 @@ def run_analysis(current_user_id):
 
         try:
             #TODO: provide access to functions here
-            params = top_var.top_variance(params)
+            job_done = run_bioce_pipeline.run_bioce(params)
             # if we exited gracefully, just let the user know
-            if not params['fs_done']:
+            if not job_done:
                 delete_analysis(analysis_id, analysis_folder, failed_folder)
                 subject = 'Your BIOCE job could not be completed'
                 message = \
@@ -65,7 +65,7 @@ def run_analysis(current_user_id):
             # traceback + save the analysis to failedAnalyses folder
             delete_analysis(analysis_id, analysis_folder, failed_folder)
             send_fail_mail(user.email, user.first_name, analysis.analysis_name)
-            app.logger.error('Top variance failed for analysis: %d'
+            app.logger.error('BIOCE failed for analysis: %d'
                              '\n%s' % (analysis_id, traceback.format_exc()))
             return False
 

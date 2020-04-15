@@ -96,13 +96,13 @@ class UploadForm(FlaskForm):
     file_sel = 'Please select a file.'
     study_name = StringField('Name of the study', [InputRequired(),
                              Length(min=3,max=25), UniqueDatasetName()])
-    dataset1 = FileField('Dataset file 1', [DataRequired(file_sel),
+    dataset1 = FileField('Experimental data', [DataRequired(file_sel),
                          ExtensionCheck(exts=['.dat','.txt'])])
-    dataset2 = FileField('Dataset file 2', [DataRequired(file_sel),
+    dataset2 = FileField('PDB files', [DataRequired(file_sel),
                                             ExtensionCheck(exts=['.zip', '.gz'])])
-    dataset3 = FileField('Dataset file 3', [DataRequired(file_sel),
+    dataset3 = FileField('Simulated file', [DataRequired(file_sel),
                                             ExtensionCheck(exts=['.txt', '.sim'])])
-    tc = BooleanField('Terms and conditions', [BooleanRequired()])
+    skip_variationl = BooleanField('Skip variational', [BooleanRequired()])
 
     # hidden field to indicate from the client side when sending the AJAX POST
     # reuqest if we are validating or submitting

@@ -163,15 +163,16 @@ def run_complete(simulated_file, priors_file, experimental_file, output_name, na
     print("Chi2 SAXS:" + str(crysol_chi2))
 
 
-if __name__ == "__main__":
-    pdb_files = 'pdbs.zip'
-    simulated = 'SimulatedIntensities.txt'
-    priors = 'weights.txt'
-    experimental = 'simulated.dat'
-    output = 'output.txt'
-    file_list = 'file_list'
+def run_bioce(params):
+    pdb_files = params[0]
+    simulated = params[1]
+    priors = params[2]
+    experimental = params[3]
+    output = params[4]
+    file_list = params[5]
     #We need to intrdduce some heuristic here
 
+    job_done = True
     with zipfile.ZipFile(pdb_files, 'r') as zipObj:
         zipObj.extractall()
         pdb_list = zipObj.namelist()
@@ -180,10 +181,37 @@ if __name__ == "__main__":
     winvert = 1.0/number_of_structures
     weight_cut = winvert if winvert < maximum_cut else maximum_cut
 
-    simulate_profiles(pdb_list, experimental)
-    #TODO: Added for testing purposes. Will remove it from proudction code
-    simulated = 'SimulatedIntensitiesTest.txt'
-    #run_variational(simulated, priors, experimental, 'vbi_'+output, file_list, weight_cut)
-    simulated, priors, file_list = process_variational('vbi_'+output, simulated, priors, file_list)
+    try:
+        simulate_profiles(pdb_list, experimental)
+    except:
+        print("Failed to simulated profiles")
+        job_done = False
+        raise
 
-    run_complete(simulated, priors, experimental, 'cbi_'+output, file_list)
+    #simulated = 'SimulatedIntensitiesTest.txt'
+    try:
+        run_variational(simulated, priors, experimental, 'vbi_'+output, file_list, weight_cut)
+        simulated, priors, file_list = process_variational('vbi_'+output, simulated, priors, file_list)
+    except:
+        print("Failed to perform Variational analysis")
+        job_done = False
+        raise
+
+    try:
+        run_complete(simulated, priors, experimental, 'cbi_'+output, file_list)
+    except:
+        print("Failed to perform Variational analysis")
+        job_done = False
+        raise
+
+    return job_done
+
+if __name__ == "__main__":
+    pdb_files = 'pdbs.zip'
+    simulated = 'SimulatedIntensities.txt'
+    priors = 'weights.txt'
+    experimental = 'simulated.dat'
+    output = 'output.txt'
+    file_list = 'file_list'
+    params = [pdb_files,simulated,priors,experimental,output,file_list]
+    job_done = run_bioce(params)
