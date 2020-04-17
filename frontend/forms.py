@@ -238,9 +238,6 @@ class UniqueAnalysisName(object):
 # DATA FOR FS METHOD, MULTI CORR METHOD SELECT-FIELD
 # ------------------------------------------------------------------------------
 
-multi_labels = ['Benjamini-Hochberg', 'Bonferroni']
-multi_ind = ['fdr_bh','bonferroni']
-multi_data = list(zip(multi_ind, multi_labels))
 
 number_ranges = {
     'alpha': NumberRange(min=.001, max=0.1, message='Has to be between 0.001 and 0.1'),
@@ -250,10 +247,10 @@ number_ranges = {
 class AnalysisForm(FlaskForm):
     analysis_name = StringField('Name of the analysis', [InputRequired(),
                                 Length(min=3,max=25), UniqueAnalysisName()])
-    multi_corr_method = SelectField('Method for correction', coerce=str,
-                                    choices=multi_data, default='fdr_bh')
-    alpha_val = DecimalField('&alpha; for the multiple correction method',
-                             [number_ranges['alpha']], default=0.05)
-    feat_num = IntegerField('Number of top variance feattures',
-                            [number_ranges['feat_num']], default=5)
+    # model_names = SelectField('Method for correction', coerce=str,
+    #                                 choices=multi_data, default='fdr_bh')
+    # chi2 = DecimalField('&alpha; for the multiple correction method',
+    #                          [number_ranges['alpha']], default=0.0)
+    # jsd = IntegerField('Number of top variance feattures',
+    #                         [number_ranges['feat_num']], default=0.0)
     check = BooleanField('')
