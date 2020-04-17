@@ -239,10 +239,7 @@ class UniqueAnalysisName(object):
 # ------------------------------------------------------------------------------
 
 
-number_ranges = {
-    'alpha': NumberRange(min=.001, max=0.1, message='Has to be between 0.001 and 0.1'),
-    'feat_num': NumberRange(min=2, max=10, message='Has to be between 1 and 10')
-}
+
 
 class AnalysisForm(FlaskForm):
     analysis_name = StringField('Name of the analysis', [InputRequired(),
@@ -253,4 +250,7 @@ class AnalysisForm(FlaskForm):
     #                          [number_ranges['alpha']], default=0.0)
     # jsd = IntegerField('Number of top variance feattures',
     #                         [number_ranges['feat_num']], default=0.0)
+    model_names = 'model1.pdb'
+    chi2 = 0.0
+    jsd = 0.0
     check = BooleanField('')
