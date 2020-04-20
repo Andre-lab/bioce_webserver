@@ -6,20 +6,9 @@
    "analysis_name": ("Name of the analysis","Please name your analysis, so when you hopefully return later to analyse another dataset,
                     or this one with other parameters, you can view th results of either of your previous analyses.<br><br>
                     It has to be at least 3 characters long and cannot be longer than 25 characters."),
-   "multi_corr": ("Correction for multiple testing","Since we have calculated several hundred correlations from our dataset, we need to account
-                  for multiple testing. Below you can choose the method to use and the adjusted p-value."),
-   "multi_corr_method": ("Method for correction","<b>Benjamini-Hochberg: </b>This is the classic method that started the False Discovery Rate
-                          method in life sciences. Since then, it has largely replaced the much harsher Bonferroni method. Let's say we
-                          perform a 1000 tests. Then rejecting the null hypothesis at &alpha;=0.05 would mean, that we would end up with 50
-                          false positives. The Bonferroni method would adjust &alpha; to 0.05/1000=0.00005 ensuring that our Familiy Wise Error
-                          Rate (FWER) is still 0.05. This leads to a lot of false negatives. FDR instead ensures that out of the tests
-                          we reject at &alpha;=0.05, only about 5% are actually false. <br><br>
-                         <b>Bonferroni: </b>See description above."),
-   "alpha_val": ("&alpha; or the multiple correction method","At what value should we reject correlations after the correction for multiple
-                testing was performed. This will be automatically divided by the number of tests for the Bonferroni.
-                correction"),
-   "feat_num": ("Number of top variance features to select","Determines how many features should be selected from each dataset for covariance analysis.
-                 It has to be between 2 and 10.")
+   "model_names": ("Model names","PDB models names selected in the Bayesian analysis"),
+   "chi2": ("chi2","chi2 between experimental and simulated SAS curves. Simulated curve is calculated from the weighted ensemble"),
+   "jsd": ("Jensen-Shannon divergence","Jensen-Shanno divergence reflecting uncertainity of the posterior weights calculated from ensemble")
 } -%}
 
 {% block layout %}
@@ -71,26 +60,16 @@
             </div>
             <!-- ----------------- MULTIPLE CORRECTION -------------------- -->
             <div class="panel panel-default">
-                <div class="panel-heading"><b>Correction for multiple testing</b>
-                    {{ render_question_mark(tooltips["multi_corr"]) }}
+                <div class="panel-heading"><b>Generared ensemble</b>
                 </div>
                 <div class="panel-body">
-                    {{ form.multi_corr_method.label}}{{ render_question_mark(tooltips["multi_corr_method"]) }}
-                    {{ form.multi_corr_method(class_="form-control") }}
+                    {{ form.model_names.label}}{{ render_question_mark(tooltips["model_names"]) }}
+                    {{ form.model_names(class_="form-control") }}
                     <br>
-                    {{ form.alpha_val.label}} {{ render_question_mark(tooltips["alpha_val"]) }}
-                    {{ form.alpha_val(class_="form-control", type="number", step="0.01") }}
-                    {{ render_field_error(form.alpha_val) }}
-                </div>
-            </div>
-            <!-- ------------------ DISCARD CORRELATIONS ------------------ -->
-            <div class="panel panel-default" id="annotation_panel">
-                <div class="panel-heading"><b>Top variance features</b>
+                    {{ form.chi2.label}} {{ render_question_mark(tooltips["chi2"]) }}
                 </div>
                 <div class="panel-body">
-                    {{ form.feat_num.label}} {{ render_question_mark(tooltips["feat_num"]) }}
-                    {{ form.feat_num(class_="form-control", type="number", step="1") }}
-                    {{ render_field_error(form.feat_num) }}
+                    {{ form.jsd.label}} {{ render_question_mark(tooltips["jsd"]) }}
                 </div>
             </div>
             <button type="button" id="analyse-button" class="btn btn-info btn-block"><h4><strong><span id="analyse-button-text">ANALYSE</span></strong></h4></button>

@@ -102,7 +102,7 @@ class UploadForm(FlaskForm):
                                             ExtensionCheck(exts=['.zip', '.gz'])])
     dataset3 = FileField('Simulated file', [DataRequired(file_sel),
                                             ExtensionCheck(exts=['.txt', '.sim'])])
-    skip_variationl = BooleanField('Skip variational', [BooleanRequired()])
+    skip_variational = BooleanField('Skip variational')
 
     # hidden field to indicate from the client side when sending the AJAX POST
     # reuqest if we are validating or submitting
@@ -237,9 +237,6 @@ class UniqueAnalysisName(object):
 # ------------------------------------------------------------------------------
 # DATA FOR FS METHOD, MULTI CORR METHOD SELECT-FIELD
 # ------------------------------------------------------------------------------
-
-
-
 
 class AnalysisForm(FlaskForm):
     analysis_name = StringField('Name of the analysis', [InputRequired(),

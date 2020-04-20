@@ -13,7 +13,7 @@ def load_params(analysis_folder):
     def str2bool(string):
         return string.lower() in ("yes", "true", "t", "1")
 
-    bool_fields = ['autocorr']
+    bool_fields = ['skip_variational']
     for field in bool_fields:
         if field in params:
             params[field] = str2bool(params[field])
