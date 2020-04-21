@@ -1,7 +1,7 @@
 """
 Pipeline for running BIOCE from raw pdb file and saxs data
 """
-from preparePepsi import (
+from .preparePepsi import (
     generate_file_list,
     generate_weights,
     process_pdbs_with_experimental,
@@ -36,7 +36,7 @@ def savetext(filename, string_array):
         output_file.write(name+" ")
     output_file.close()
 
-def simulate_profiles(pdb_list_name, experimental_filename):
+def simulate_profiles(pdb_list, experimental_filename):
     """
 
     :param pdb_list_name:
@@ -44,8 +44,8 @@ def simulate_profiles(pdb_list_name, experimental_filename):
     :return:
     """
     experimental_file = experimental_filename
-    generate_file_list(pdb_list_name)
-    generate_weights(pdb_list_name)
+    generate_file_list(pdb_list)
+    generate_weights(pdb_list)
     intensities = process_pdbs_with_experimental(pdb_list, experimental_file)
     # TODO: Change locations to Analysis software
     np.savetxt("SimulatedIntensities.txt", intensities)
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     pdb_files = 'pdbs.zip'
     simulated = 'SimulatedIntensities.txt'
     priors = 'weights.txt'
-    experimental = 'simulated.dat'
+    experimental = 'experimental_test.dat'
     output = 'output.txt'
     file_list = 'file_list'
     params = [pdb_files,simulated,priors,experimental,output,file_list]

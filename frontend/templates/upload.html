@@ -84,7 +84,7 @@
                          <div class="col-lg-6">
                             {{ form.dataset1.label }}
                             {{ render_question_mark(tooltips["dataset1"]) }}
-                            {{ form.dataset1(accept=".csv,text/plain") }}
+                            {{ form.dataset1(accept=".dat,text/plain") }}
                             {{ render_field_error(form.dataset1, 'medium_bottom') }}
                         </div>
                     </div>
@@ -98,7 +98,7 @@
                         <div class="col-lg-6">
                             {{ form.dataset2.label }}
                             {{ render_question_mark(tooltips["dataset2"]) }}
-                            {{ form.dataset2(accept=".csv,text/plain") }}
+                            {{ form.dataset2(accept=".zip") }}
                             {{ render_field_error(form.dataset2, 'small_top') }}
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                         <div class="col-lg-6">
                             {{ form.dataset3.label }}
                             {{ render_question_mark(tooltips["dataset3"]) }}
-                            {{ form.dataset3(accept=".csv,text/plain") }}
+                            {{ form.dataset3(accept=".sim,text/plain") }}
                             {{ render_field_error(form.dataset3, 'small_top') }}
                         </div>
                     </div>
@@ -125,7 +125,7 @@
 
                 </div>
                 <div class="panel-body">
-                    {{ form.skip_variational.label }} Complete Bayesian Inference only (skip Variational)
+                    {{ form.skip_variational() }} Complete Bayesian Inference only (skip Variational)
                     {{ render_question_mark(tooltips["skip_variational"]) }}
                     {{ render_field_error(form.skip_variational) }}
                 </div>

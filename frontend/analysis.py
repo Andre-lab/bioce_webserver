@@ -5,7 +5,7 @@ import traceback
 from celery.exceptions import Terminated
 from flask_mail import Message
 
-#from backend.bioce import run_bioce_pipeline
+from backend.bioce import run_bioce_pipeline
 from backend.utils import io_params
 from frontend import app, db, models, create_celery_app, mail
 

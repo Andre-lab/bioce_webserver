@@ -100,8 +100,7 @@ class UploadForm(FlaskForm):
                          ExtensionCheck(exts=['.dat','.txt'])])
     dataset2 = FileField('PDB files', [DataRequired(file_sel),
                                             ExtensionCheck(exts=['.zip', '.gz'])])
-    dataset3 = FileField('Simulated file', [DataRequired(file_sel),
-                                            ExtensionCheck(exts=['.txt', '.sim'])])
+    dataset3 = FileField('Simulated file', [ExtensionCheck(exts=['.txt', '.sim'])])
     skip_variational = BooleanField('Skip variational')
 
     # hidden field to indicate from the client side when sending the AJAX POST
