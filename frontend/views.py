@@ -69,6 +69,7 @@ def upload():
 
         # ---------------------------------------------------------------------
         # we got a form that needs to be validated
+        print('Check in validate method', check)
         if check:
             if form.validate_on_submit():
                 # we passed validation, so let's return OK
@@ -80,16 +81,17 @@ def upload():
         # ---------------------------------------------------------------------
         # we got a form, that has passed validation, let's save the files
         else:
-            try:
-                return save_study(form, request.files)
-            except:
-                # couldn't save the files for some reason, let's try again and
-                # clear up folder to make sure no corrupted files left behind
-                user_folder = get_user_folder()
-                study_folder = secure_filename(form.study_name.data)
-                user_data_folder = os.path.join(user_folder, study_folder)
-                clear_up_study(user_data_folder)
-                return json.dumps(dict(status='invalid'))
+            print('No validation', check)
+            #try:
+            return save_study(form, request.files)
+            # except:
+            #     # couldn't save the files for some reason, let's try again and
+            #     # clear up folder to make sure no corrupted files left behind
+            #     user_folder = get_user_folder()
+            #     study_folder = secure_filename(form.study_name.data)
+            #     user_data_folder = os.path.join(user_folder, study_folder)
+            #     clear_up_study(user_data_folder)
+            #     return json.dumps(dict(status='invalid'))
 
     # -------------------------------------------------------------------------
     # render the form for the first time via GET

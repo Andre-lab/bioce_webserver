@@ -1,13 +1,13 @@
 """
 Pipeline for running BIOCE from raw pdb file and saxs data
 """
-from .preparePepsi import (
+from backend.bioce.preparePepsi import (
     generate_file_list,
     generate_weights,
     process_pdbs_with_experimental,
 )
-import variationalBayesian as vbi
-import fullBayesian as cbi
+import backend.bioce.variationalBayesian as vbi
+import backend.bioce.fullBayesian as cbi
 import zipfile
 import numpy as np
 import os
@@ -184,7 +184,7 @@ def run_bioce(params):
     try:
         simulate_profiles(pdb_list, experimental)
     except:
-        print("Failed to simulated profiles")
+        print("Failed to simulate profiles")
         job_done = False
         raise
 
@@ -200,7 +200,7 @@ def run_bioce(params):
     try:
         run_complete(simulated, priors, experimental, 'cbi_'+output, file_list)
     except:
-        print("Failed to perform Variational analysis")
+        print("Failed to perform Complete analysis")
         job_done = False
         raise
 

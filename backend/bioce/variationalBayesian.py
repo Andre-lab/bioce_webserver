@@ -10,7 +10,7 @@ __email__ = "Wojciech.Potrzebowski@biochemistry.lu.se"
 
 import numpy as np
 import optparse
-import vbwSC
+import backend.bioce.vbwSC as vbwSC
 import os
 
 def produce_final_output(output, file_list):

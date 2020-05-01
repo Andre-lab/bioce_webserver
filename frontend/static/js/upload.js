@@ -147,6 +147,7 @@ function doUpload() {
                 // we have errors to display
                 displayErrors(data.errors);
             } else {
+            //TODO: This error is thrown!
                 window.location = ERROR_URL;
             }
         }

@@ -12,13 +12,13 @@ import optparse
 
 import numpy as np
 import pystan
-import psisloo
+import backend.bioce.psisloo as psisloo
 import matplotlib.pyplot as plt
-import stan_utility
+import backend.bioce.stan_utility as stan_utility
 
-from statistics import calculateChiCrysol, calculateChemShiftsChi, JensenShannonDiv, waic, mean_for_weights, me_log_lik
-from stan_models import stan_code, stan_code_CS, stan_code_EP, stan_code_EP_CS, \
-    psisloo_quanities, posterior_predict_quanities
+from backend.bioce.statistics import calculateChiCrysol, calculateChemShiftsChi, JensenShannonDiv, waic
+from backend.bioce.stan_models import stan_code, stan_code_CS, stan_code_EP, stan_code_EP_CS, \
+    psisloo_quanities
 
 def execute_stan(experimental, simulated, priors, iterations, chains, njobs):
     """

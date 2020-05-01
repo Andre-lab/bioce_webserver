@@ -94,12 +94,9 @@ name_validator = [InputRequired(), Length(min=3,max=50)]
 
 class UploadForm(FlaskForm):
     file_sel = 'Please select a file.'
-    study_name = StringField('Name of the study', [InputRequired(),
-                             Length(min=3,max=25), UniqueDatasetName()])
-    dataset1 = FileField('Experimental data', [DataRequired(file_sel),
-                         ExtensionCheck(exts=['.dat','.txt'])])
-    dataset2 = FileField('PDB files', [DataRequired(file_sel),
-                                            ExtensionCheck(exts=['.zip', '.gz'])])
+    study_name = StringField('Name of the study', [InputRequired(), Length(min=3,max=25), UniqueDatasetName()])
+    dataset1 = FileField('Experimental data', [DataRequired(file_sel), ExtensionCheck(exts=['.dat','.txt'])])
+    dataset2 = FileField('PDB files', [DataRequired(file_sel), ExtensionCheck(exts=['.zip', '.gz'])])
     dataset3 = FileField('Simulated file', [ExtensionCheck(exts=['.txt', '.sim'])])
     skip_variational = BooleanField('Skip variational')
 

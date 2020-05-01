@@ -43,7 +43,6 @@ def save_study(form, files):
     # new user? make folder
     if not os.path.exists(user_folder):
         os.makedirs(user_folder)
-
     user_data_folder = os.path.join(user_folder, study_folder)
     if not os.path.exists(user_data_folder):
         os.makedirs(user_data_folder)
@@ -52,10 +51,11 @@ def save_study(form, files):
     for field, f in files.items():
         filename = secure_filename(f.filename)
         path = os.path.join(user_data_folder, filename)
+        print("Saving file to ", path)
         files_dict[field] = filename
         f.save(path)
         f.close()
-
+    print('files dict', files_dict)
     # -------------------------------------------------------------------------
     # check uploaded files
     # this import must be here, because get_user_folder is needed by check_files

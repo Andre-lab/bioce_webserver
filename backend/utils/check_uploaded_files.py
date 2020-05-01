@@ -24,7 +24,6 @@ def check_files(user_data_folder, files_dict, form):
     format_errors = dict()
     # this will show a top panel on the form, informing the user
     format_errors['misformatted'] = ''
-    autocorr = not form.autocorr.data
     study_folder = secure_filename(form.study_name.data)
 
     # -------------------------------------------------------------------------

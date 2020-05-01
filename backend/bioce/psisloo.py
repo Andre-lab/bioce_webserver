@@ -1,5 +1,5 @@
 
-from psis import psisloo as _psisloo
+from backend.bioce.psis import psisloo as _psisloo
 import pandas
 import math
 import numpy
