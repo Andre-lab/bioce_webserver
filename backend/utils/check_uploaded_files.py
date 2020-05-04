@@ -32,8 +32,10 @@ def check_files(user_data_folder, files_dict, form):
     datasets = ['dataset1']
     samples = []
     probes = []
-    datasets.append('dataset2')
-    datasets.append('dataset3')
+    #TODO: Add checks for remaining file formats
+    #PDB files are currently not checked
+    #datasets.append('dataset2')
+    #datasets.append('dataset3')
 
     for dataset in datasets:
         # check if we can open the file
@@ -89,7 +91,7 @@ def clear_up_study(study_folder):
     if os.path.exists(folder_to_delete):
         shutil.rmtree(folder_to_delete)
 
-
+#TODO: here comes the problem
 def open_file(file_path, **kwargs):
     """
     Opens files based on their file extension in pandas
@@ -99,5 +101,5 @@ def open_file(file_path, **kwargs):
     if extension == '.txt' or  extension == '.dat':
         sep = ' '
         #READ .txt, dat, zip and tar file
-        file = pd.read_csv(file_path, sep=sep, index_col=0, **kwargs)
+    file = pd.read_csv(file_path, sep=sep, index_col=None, header=None, **kwargs)
     return file, sep

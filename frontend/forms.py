@@ -234,16 +234,13 @@ class UniqueAnalysisName(object):
 # DATA FOR FS METHOD, MULTI CORR METHOD SELECT-FIELD
 # ------------------------------------------------------------------------------
 
+number_ranges = {
+    'wcut': NumberRange(min=.001, max=0.1, message='Has to be between 0.001 and 0.1')
+}
+
 class AnalysisForm(FlaskForm):
     analysis_name = StringField('Name of the analysis', [InputRequired(),
                                 Length(min=3,max=25), UniqueAnalysisName()])
-    # model_names = SelectField('Method for correction', coerce=str,
-    #                                 choices=multi_data, default='fdr_bh')
-    # chi2 = DecimalField('&alpha; for the multiple correction method',
-    #                          [number_ranges['alpha']], default=0.0)
-    # jsd = IntegerField('Number of top variance feattures',
-    #                         [number_ranges['feat_num']], default=0.0)
-    model_names = 'model1.pdb'
-    chi2 = 0.0
-    jsd = 0.0
+    weight_cut = DecimalField('Weight cut; for the variational Bayesian method',
+                              [number_ranges['wcut']], default=0.001)
     check = BooleanField('')

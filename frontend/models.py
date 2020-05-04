@@ -89,9 +89,6 @@ class Analyses(db.Model):
     study_id = db.Column(db.Integer, db.ForeignKey('studies.id'))
     analysis_name = db.Column(db.String(30))
     status = db.Column(db.Integer)
-    #TODO: Need to change it to array
-    model_names = db.Column(db.String(255))
-    chi2 = db.Column(db.Float())
-    jsd = db.Column(db.Float())
+    weight_cut = db.Column(db.Float())
     timestamp_start = db.Column(db.DateTime)
     timestamp_finish = db.Column(db.DateTime)

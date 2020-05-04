@@ -74,9 +74,6 @@ def save_study_to_db(files_dict, form):
     """
     study = models.Studies(author=current_user,
                            study_name=secure_filename(form.study_name.data),
-                           dataset1_type=form.dataset1_type.data,
-                           dataset2_type=form.dataset2_type.data,
-                           dataset3_type=form.dataset3_type.data,
                            skip_variational= bool(form.skip_variational.data),
                            timestamp=datetime.datetime.utcnow())
 
@@ -199,7 +196,7 @@ def get_studies_array():
 
         # get files of study
         params = []
-        params.append({'field':'Multi-omics study', 'value': False})
+        params.append({'field':'Skip Variational', 'value': False})
         study_dict['params'] = params
 
         files = []
