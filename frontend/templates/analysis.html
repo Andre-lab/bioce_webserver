@@ -6,8 +6,9 @@
    "analysis_name": ("Name of the analysis","Please name your analysis, so when you hopefully return later to analyse another dataset,
                     or this one with other parameters, you can view th results of either of your previous analyses.<br><br>
                     It has to be at least 3 characters long and cannot be longer than 25 characters."),
-   "weight_cut": ("Model names","Weight cut to exclude models during Variational iteration. 1.0 over number of models
-                    is usually a good guess to begin with")
+   "weight_cut": ("Model names","Weight cut to exclude models during Variational interferance. 1.0 over number of models
+                    is usually a good guess to begin with. You also don't want to exclude too many models and setting this
+                    parameters higher than e.g. 0.1 may not make sense")
 } -%}
 
 {% block layout %}
@@ -59,11 +60,11 @@
             </div>
             <!-- ----------------- GENERATED ENSEMBLE -------------------- -->
             <div class="panel panel-default">
-                <div class="panel-heading"><b>Generared ensemble</b>
+                <div class="panel-heading"><b>Run parameters</b>
                 </div>
                 <!-- TODO: model names is a problem -->
                 <div class="panel-body">
-                    {{ form.weight_cut.label}} {{ render_question_mark(tooltips["alpha_val"]) }}
+                    {{ form.weight_cut.label}} {{ render_question_mark(tooltips["weight_cut"]) }}
                     {{ form.weight_cut(class_="form-control", type="number", step="0.01") }}
                     {{ render_field_error(form.weight_cut) }}
                 </div>

@@ -235,12 +235,12 @@ class UniqueAnalysisName(object):
 # ------------------------------------------------------------------------------
 
 number_ranges = {
-    'wcut': NumberRange(min=.001, max=0.1, message='Has to be between 0.001 and 0.1')
+    'wcut': NumberRange(min=.001, max=0.5, message='Has to be between 0.001 and 0.5')
 }
 
 class AnalysisForm(FlaskForm):
     analysis_name = StringField('Name of the analysis', [InputRequired(),
                                 Length(min=3,max=25), UniqueAnalysisName()])
-    weight_cut = DecimalField('Weight cut; for the variational Bayesian method',
+    weight_cut = DecimalField('Weight threshold for excluding models',
                               [number_ranges['wcut']], default=0.001)
     check = BooleanField('')
