@@ -18,24 +18,26 @@ def read_file_safe(filename, skip_lines, dtype="float64"):
     return results
 
 
-def process_pdbs_with_experimental(pdb_list, experimental_file):
+def process_pdbs_with_experimental(directory, pdb_list, experimental_file):
     intensities = None
-    errors = None
+    #experimental_file = os.path.join(directory, experimental_file)
     for pdb_file in pdb_list:
+        pdb_filename = os.path.join(directory,pdb_file.strip("\n"))
         cmd_line = (
             "Pepsi-SAXS --dp_min 0 --dp_max 0 --dp_N 1 --r0_min_factor 1 --r0_max_factor 1 --r0_N 1 "
-            + pdb_file.strip("\n")
+            + pdb_filename
             + " "
             + experimental_file
+            + " -o "+pdb_filename+'.fit'
         )
         print(cmd_line)
         proc = Popen(shlex.split(cmd_line), stdout=PIPE, shell=False)
         os.waitpid(proc.pid, 0)
         (out, err) = proc.communicate()
-        data = read_file_safe(pdb_file[:-4] + "-" + experimental_file[:-3] + "fit", 6)
+        data = read_file_safe(pdb_filename+ ".fit", 6)
         intensity = data[:, 3]
         qvector = data[:, 0]
-        log_file = open(pdb_file[:-4] + "-" + experimental_file[:-3] + "log")
+        log_file = open(pdb_filename+ ".log")
         log_data = log_file.readlines()[62]
         log_file.close()
         if log_data[:7] != "Scaling":
@@ -65,16 +67,18 @@ def add_errors_m(intensities, qvector):
     return sigma * I_0 / mult_fact
 
 
-def generate_file_list(pdb_list):
+def generate_file_list(directory, pdb_list):
     files = read_file_safe(pdb_list, 0, "unicode")
-    f = open("file_list", "w")
+    flist_file = os.path.join(directory,'file_list.txt')
+    f = open(flist_file, "w")
     line_to_write = " ".join(files)
     f.writelines(line_to_write)
     f.close()
 
 
-def generate_weights(pdb_list):
-    out = open("weights.txt", "w")
+def generate_weights(directory, pdb_list):
+    wfile = os.path.join(directory,'weights.txt')
+    out = open(wfile, "w")
     files = read_file_safe(pdb_list, 0, "unicode")
     len_models = len(files)
     fwght = 1.0 / (len_models)

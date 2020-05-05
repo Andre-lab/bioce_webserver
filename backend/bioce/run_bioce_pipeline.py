@@ -36,7 +36,7 @@ def savetext(filename, string_array):
         output_file.write(name+" ")
     output_file.close()
 
-def simulate_profiles(pdb_list, experimental_filename):
+def simulate_profiles(directory, pdb_list, experimental_filename):
     """
 
     :param pdb_list_name:
@@ -44,9 +44,9 @@ def simulate_profiles(pdb_list, experimental_filename):
     :return:
     """
     experimental_file = experimental_filename
-    generate_file_list(pdb_list)
-    generate_weights(pdb_list)
-    intensities = process_pdbs_with_experimental(pdb_list, experimental_file)
+    generate_file_list(directory, pdb_list)
+    generate_weights(directory, pdb_list)
+    intensities = process_pdbs_with_experimental(directory, pdb_list, experimental_file)
     # TODO: Change locations to Analysis software
     np.savetxt("SimulatedIntensities.txt", intensities)
 
@@ -162,6 +162,57 @@ def run_complete(simulated_file, priors_file, experimental_file, output_name, na
     print("JSD: " + str(jsd))
     print("Chi2 SAXS:" + str(crysol_chi2))
 
+
+def run_bioce_from_webserver(params):
+    experimental = os.path.join(params['study_folder'],params['dataset1'])
+    pdb_files = os.path.join(params['study_folder'],params['dataset2'])
+    #Standard file names
+    file_list = os.path.join(params['analysis_folder'],'file_list.txt')
+    simulated = os.path.join(params['analysis_folder'],'SimulatedIntensities.txt')
+    priors = os.path.join(params['analysis_folder'],'weights.txt')
+    vbi_output = os.path.join(params['output_folder'], 'vbi_output.txt')
+    cbi_output = os.path.join(params['output_folder'], 'cbi_output.txt')
+    job_done = True
+    try:
+        with zipfile.ZipFile(pdb_files, 'r') as zipObj:
+            zipObj.extractall(params['analysis_folder'])
+            pdb_list = zipObj.namelist()
+        #number_of_structures = len(pdb_list)
+        simulate_profiles(params['analysis_folder'],pdb_list, experimental)
+    except:
+        print("Failed to extact zipfile")
+        job_done = False
+        raise
+
+    #maximum_cut = 0.01
+    #winvert = 1.0/number_of_structures
+    #weight_cut = winvert if winvert < maximum_cut else maximum_cut
+    #TODO: This will come as parameter from simulatiom
+    weight_cut = 0.05
+    try:
+        simulate_profiles(pdb_list, experimental)
+    except:
+        print("Failed to simulate profiles")
+        job_done = False
+        raise
+
+    #simulated = 'SimulatedIntensitiesTest.txt'
+    try:
+        run_variational(simulated, priors, experimental, vbi_output, file_list, weight_cut)
+        simulated, priors, file_list = process_variational(vbi_output, simulated, priors, file_list)
+    except:
+        print("Failed to perform Variational analysis")
+        job_done = False
+        raise
+
+    try:
+        run_complete(simulated, priors, experimental, cbi_output, file_list)
+    except:
+        print("Failed to perform Complete analysis")
+        job_done = False
+        raise
+
+    return job_done
 
 def run_bioce(params):
     pdb_files = params[0]
