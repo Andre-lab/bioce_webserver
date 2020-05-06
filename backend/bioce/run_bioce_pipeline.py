@@ -43,12 +43,11 @@ def simulate_profiles(directory, pdb_list, experimental_filename):
     :param experimental_filename:
     :return:
     """
-    experimental_file = experimental_filename
     generate_file_list(directory, pdb_list)
     generate_weights(directory, pdb_list)
-    intensities = process_pdbs_with_experimental(directory, pdb_list, experimental_file)
-    # TODO: Change locations to Analysis software
-    np.savetxt("SimulatedIntensities.txt", intensities)
+    intensities = process_pdbs_with_experimental(directory, pdb_list, experimental_filename)
+    simulate_profiles = os.path.join(directory, "SimulatedIntensities.txt")
+    np.savetxt(simulate_profiles, intensities)
 
 
 def run_variational(simulated, priors, experimental, output, file_list, weight_cut):
@@ -178,7 +177,6 @@ def run_bioce_from_webserver(params):
             zipObj.extractall(params['analysis_folder'])
             pdb_list = zipObj.namelist()
         #number_of_structures = len(pdb_list)
-        simulate_profiles(params['analysis_folder'],pdb_list, experimental)
     except:
         print("Failed to extact zipfile")
         job_done = False
@@ -190,7 +188,7 @@ def run_bioce_from_webserver(params):
     #TODO: This will come as parameter from simulatiom
     weight_cut = 0.05
     try:
-        simulate_profiles(pdb_list, experimental)
+        simulate_profiles(params['analysis_folder'], pdb_list, experimental)
     except:
         print("Failed to simulate profiles")
         job_done = False

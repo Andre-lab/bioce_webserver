@@ -72,7 +72,7 @@ def check_files(user_data_folder, files_dict, form):
         df_numeric = df_numeric.fillna(df_numeric.median())
 
         # save imputed, all-numeric dataset
-        df_numeric.to_csv(dataset_path, sep=sep)
+        df_numeric.to_csv(dataset_path, sep=sep, header=False, index=False)
 
 
     # everything went fine, every file is checked
