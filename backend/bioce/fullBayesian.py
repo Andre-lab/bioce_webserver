@@ -48,14 +48,14 @@ def execute_stan(experimental, simulated, priors, iterations, chains, njobs):
     #                   "weight[3]":0.3, "weight[4]":0.4, "scale":1}]
     #fit = sm.optimizing(data=stan_dat, init=initial_values, algorithm="BFGS")
 
-    fig = fit.plot(pars="weights")
-    #ax.set_color_cycle(['red', 'black', 'yellow', 'green', 'blue'])
-    fig.subplots_adjust(wspace=0.8)
-    fig.savefig("stan_weights.png", dpi=300)
-
-    fig = fit.plot(pars="scale")
-    fig.subplots_adjust(wspace=0.8)
-    fig.savefig("stan_scale.png", dpi=300)
+    # fig = fit.plot(pars="weights")
+    # #ax.set_color_cycle(['red', 'black', 'yellow', 'green', 'blue'])
+    # fig.subplots_adjust(wspace=0.8)
+    # fig.savefig("stan_weights.png", dpi=300)
+    #
+    # fig = fit.plot(pars="scale")
+    # fig.subplots_adjust(wspace=0.8)
+    # fig.savefig("stan_scale.png", dpi=300)
 
     #np.savetxt("target_curve_full.csv", fit.summary()['summary'][-869:-1][:,:2])
     return fit

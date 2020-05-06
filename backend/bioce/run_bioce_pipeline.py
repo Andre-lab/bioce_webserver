@@ -96,16 +96,13 @@ def run_variational(simulated, priors, experimental, output, file_list, weight_c
 
     vbi.produce_final_output(output, file_list)
 
-def process_variational(vbi_output_file, simulated_file, priors_file, names_file):
+def process_variational(vbi_output_file, simulated_file, names_file, trm_simulated_file, trm_names_file, trm_priors_file):
     """
 
     :param vbi_output:
     :return:
     """
 
-    trm_simulated_file = 'trm_'+simulated_file
-    trm_priors_file = 'trm_'+priors_file
-    trm_names_file = 'trm_'+names_file
     intensities = read_file_safe(simulated_file)
     vbi_output = read_file_safe(vbi_output_file, skip_lines=5)
     last_output = vbi_output[-1][:-4]
@@ -116,12 +113,11 @@ def process_variational(vbi_output_file, simulated_file, priors_file, names_file
     output_intensities = intensities[:, nonzero_indexes[0]]
     output_filelist = file_list[last_output > 0.0]
     flat_weights = (1.0 / nonzeros) * np.ones(nonzeros)
-    print("Flat weights", flat_weights)
+    #print("Flat weights", flat_weights)
     savetext(trm_names_file, output_filelist)
     np.savetxt(trm_simulated_file, output_intensities)
     np.savetxt(trm_priors_file, flat_weights)
 
-    return trm_simulated_file, trm_priors_file, trm_names_file
 
 def run_complete(simulated_file, priors_file, experimental_file, output_name, names_file):
     """
@@ -152,7 +148,6 @@ def run_complete(simulated_file, priors_file, experimental_file, output_name, na
     fit = cbi.execute_stan(experimental, simulated, priors,
                                    iterations, chains, njobs)
 
-
     bayesian_weights, jsd, crysol_chi2 = cbi.calculate_stats(fit, experimental, simulated)
     #TODO: Write it to log somewhere
     for index, fname in enumerate(file_names):
@@ -169,6 +164,10 @@ def run_bioce_from_webserver(params):
     file_list = os.path.join(params['analysis_folder'],'file_list.txt')
     simulated = os.path.join(params['analysis_folder'],'SimulatedIntensities.txt')
     priors = os.path.join(params['analysis_folder'],'weights.txt')
+    #After running vbi
+    vbi_simulated = os.path.join(params['analysis_folder'], 'vbi_SimulatedIntensities.txt')
+    vbi_file_list = os.path.join(params['analysis_folder'],'vbi_file_list.txt')
+    vbi_priors = os.path.join(params['analysis_folder'], 'vbi_weights.txt')
     vbi_output = os.path.join(params['output_folder'], 'vbi_output.txt')
     cbi_output = os.path.join(params['output_folder'], 'cbi_output.txt')
     job_done = True
@@ -197,14 +196,14 @@ def run_bioce_from_webserver(params):
     #simulated = 'SimulatedIntensitiesTest.txt'
     try:
         run_variational(simulated, priors, experimental, vbi_output, file_list, weight_cut)
-        simulated, priors, file_list = process_variational(vbi_output, simulated, priors, file_list)
+        process_variational(vbi_output, simulated, file_list, vbi_simulated, vbi_file_list,  vbi_priors)
     except:
         print("Failed to perform Variational analysis")
         job_done = False
         raise
 
     try:
-        run_complete(simulated, priors, experimental, cbi_output, file_list)
+        run_complete(vbi_simulated, vbi_priors, experimental, cbi_output, vbi_file_list)
     except:
         print("Failed to perform Complete analysis")
         job_done = False
