@@ -119,7 +119,7 @@ def process_variational(vbi_output_file, simulated_file, names_file, trm_simulat
     np.savetxt(trm_priors_file, flat_weights)
 
 
-def run_complete(simulated_file, priors_file, experimental_file, output_name, names_file):
+def run_complete(directory, simulated_file, priors_file, experimental_file, output_name, names_file):
     """
 
     :param simulated:
@@ -145,16 +145,15 @@ def run_complete(simulated_file, priors_file, experimental_file, output_name, na
 
     priors = cbi.read_file_safe(priors_file)
 
-    fit = cbi.execute_stan(experimental, simulated, priors,
+    fit = cbi.execute_stan(directory, experimental, simulated, priors,
                                    iterations, chains, njobs)
 
     bayesian_weights, jsd, crysol_chi2 = cbi.calculate_stats(fit, experimental, simulated)
     #TODO: Write it to log somewhere
     for index, fname in enumerate(file_names):
-        print(fname, bayesian_weights[index])
-        #output_file.write((fname, bayesian_weights[index]))
-    print("JSD: " + str(jsd))
-    print("Chi2 SAXS:" + str(crysol_chi2))
+        output_file.write((fname + ':' + str(bayesian_weights[index])) + '\n')
+    output_file.write("JSD : " + str(jsd) + '\n')
+    output_file.write("Chi2 :" + str(crysol_chi2) + '\n')
 
 
 def run_bioce_from_webserver(params):
@@ -203,7 +202,7 @@ def run_bioce_from_webserver(params):
         raise
 
     try:
-        run_complete(vbi_simulated, vbi_priors, experimental, cbi_output, vbi_file_list)
+        run_complete(params['output_folder'], vbi_simulated, vbi_priors, experimental, cbi_output, vbi_file_list)
     except:
         print("Failed to perform Complete analysis")
         job_done = False

@@ -11,6 +11,7 @@ import os
 import optparse
 
 import numpy as np
+import arviz as az
 import pystan
 import backend.bioce.psisloo as psisloo
 import matplotlib.pyplot as plt
@@ -20,7 +21,7 @@ from backend.bioce.statistics import calculateChiCrysol, calculateChemShiftsChi,
 from backend.bioce.stan_models import stan_code, stan_code_CS, stan_code_EP, stan_code_EP_CS, \
     psisloo_quanities
 
-def execute_stan(experimental, simulated, priors, iterations, chains, njobs):
+def execute_stan(directory, experimental, simulated, priors, iterations, chains, njobs):
     """
 
     :param experimental:
@@ -56,6 +57,10 @@ def execute_stan(experimental, simulated, priors, iterations, chains, njobs):
     # fig = fit.plot(pars="scale")
     # fig.subplots_adjust(wspace=0.8)
     # fig.savefig("stan_scale.png", dpi=300)
+
+    axes = az.plot_density(fit, var_names=['weights'])
+    fig = axes.ravel()[0].figure
+    fig.savefig(os.path.join(directory,'stan_weights.png'))
 
     #np.savetxt("target_curve_full.csv", fit.summary()['summary'][-869:-1][:,:2])
     return fit
