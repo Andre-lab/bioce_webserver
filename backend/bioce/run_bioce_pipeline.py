@@ -11,6 +11,7 @@ import backend.bioce.fullBayesian as cbi
 import zipfile
 import numpy as np
 import os
+import pickle
 
 
 def read_file_safe(filename, dtype="float64", skip_lines=0):
@@ -149,6 +150,19 @@ def run_complete(directory, simulated_file, priors_file, experimental_file, outp
                                    iterations, chains, njobs)
 
     bayesian_weights, jsd, crysol_chi2 = cbi.calculate_stats(fit, experimental, simulated)
+
+    #fit_filemame = os.path.join(directory, 'fit.pkl')
+    #with open(fit_filemame, "wb") as f:
+    #    pickle.dump({'fit': fit}, f, protocol=-1)
+
+    # Plotting
+    import arviz
+    import matplotlib
+    matplotlib.use("Agg")
+    axes = arviz.plot_density(fit, var_names=['weights'], show=None)
+    fig = axes.ravel()[0].figure
+    fig.savefig(os.path.join(directory, 'stan_weights.png'))
+
     #TODO: Write it to log somewhere
     for index, fname in enumerate(file_names):
         output_file.write((fname + ':' + str(bayesian_weights[index])) + '\n')

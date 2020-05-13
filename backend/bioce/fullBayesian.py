@@ -11,11 +11,10 @@ import os
 import optparse
 
 import numpy as np
-import arviz as az
 import pystan
 import backend.bioce.psisloo as psisloo
-import matplotlib.pyplot as plt
 import backend.bioce.stan_utility as stan_utility
+
 
 from backend.bioce.statistics import calculateChiCrysol, calculateChemShiftsChi, JensenShannonDiv, waic
 from backend.bioce.stan_models import stan_code, stan_code_CS, stan_code_EP, stan_code_EP_CS, \
@@ -41,9 +40,10 @@ def execute_stan(directory, experimental, simulated, priors, iterations, chains,
             "priors":priors}
 
     #sm = pystan.StanModel(model_code=stan_code+psisloo_quanities)
+    sample_filename = os.path.join(directory,'saved_samples.txt')
     sm = pystan.StanModel(model_code=stan_code)
     fit = sm.sampling(data=stan_dat, iter=iterations, chains=chains,
-                      n_jobs=njobs, sample_file="saved_samples.txt")
+                      n_jobs=njobs, sample_file=sample_filename)
 
     #initial_values = [{"weight[0]":0.05, "weight[1]":0.1, "weight[2]":0.15,
     #                   "weight[3]":0.3, "weight[4]":0.4, "scale":1}]
@@ -58,11 +58,8 @@ def execute_stan(directory, experimental, simulated, priors, iterations, chains,
     # fig.subplots_adjust(wspace=0.8)
     # fig.savefig("stan_scale.png", dpi=300)
 
-    axes = az.plot_density(fit, var_names=['weights'])
-    fig = axes.ravel()[0].figure
-    fig.savefig(os.path.join(directory,'stan_weights.png'))
-
     #np.savetxt("target_curve_full.csv", fit.summary()['summary'][-869:-1][:,:2])
+
     return fit
 
 

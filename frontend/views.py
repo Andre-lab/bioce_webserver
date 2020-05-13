@@ -326,7 +326,7 @@ def vis(user_id, analysis_id, data_file):
     if not security_check(user_id, analysis_id, True):
         abort(403)
 
-    if data_file not in ['dataset1_2', 'dataset1', 'dataset2', 'dataset3']:
+    if data_file not in ['analysis_results', 'dataset1', 'dataset2', 'dataset3']:
         abort(403)
 
     # get study_folder, i.e. location of dashboard.js and dashboard.json

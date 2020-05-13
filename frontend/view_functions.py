@@ -225,7 +225,7 @@ def get_analyses_array():
         analysis_dict['analysis_name'] = analysis.analysis_name
         study = models.Studies.query.get(analysis.study_id)
         study_name = study.study_name
-        analysis_dict['data_file'] = 'dataset1_2'
+        analysis_dict['data_file'] = 'analysis_results'
         analysis_dict['status'] = analysis.status
 
         # build path for results .zip file

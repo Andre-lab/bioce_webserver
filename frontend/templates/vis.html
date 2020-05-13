@@ -133,7 +133,13 @@
         <div class="page-header">
             <h3 style="padding-left: 15px;">Models</h3>
         </div>
-        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1, file=analysis_folder+'/output/p_'+data_file+'.png') }}"/>
+         <script src="js/ngl.js"></script>
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        var stage = new NGL.Stage("viewport");
+        stage.loadFile("rcsb://1crn", {defaultRepresentation: true});
+        });
+        </script>
     </div>
 </div>
 
