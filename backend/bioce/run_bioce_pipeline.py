@@ -11,6 +11,7 @@ import backend.bioce.fullBayesian as cbi
 import zipfile
 import numpy as np
 import os
+import shutil
 import pickle
 
 
@@ -120,7 +121,44 @@ def process_variational(vbi_output_file, simulated_file, names_file, trm_simulat
     np.savetxt(trm_priors_file, flat_weights)
 
 
-def run_complete(directory, simulated_file, priors_file, experimental_file, output_name, names_file):
+def plot_weights(directory, data_labels, fit):
+    """
+
+    :param directory:
+    :param data_labels:
+    :param fit:
+    :return:
+    """
+    #import arviz
+    import matplotlib
+    matplotlib.use("Agg")
+
+    #Pytsan native solution - deprecated
+    fig = fit.plot(pars="weights")
+    #ax.set_color_cycle(['red', 'black', 'yellow', 'green', 'blue'])
+    fig.subplots_adjust(wspace=0.8)
+    fig.savefig(os.path.join(directory, 'stan_weights.png'))
+
+    #Arviz solution
+    #axes = arviz.plot_density(fit, var_names=['weights'], show=None, figsize=(400,1200))
+    #fig = axes.ravel()[0].figure
+    #fig.savefig(os.path.join(directory, 'stan_weights.png'))
+
+def save_selected_pdbfiles(analysis_directory, output_directory, data_labels):
+    """
+
+    :param analysis_directory:
+    :param output_directory:
+    :param data_labels:
+    :return:
+    """
+
+    for fname in data_labels:
+        src_file = os.path.join(analysis_directory, fname)
+        dest_file = os.path.join(output_directory, fname)
+        shutil.copyfile(src_file, dest_file)
+
+def run_complete(output_directory, analysis_directory, simulated_file, priors_file, experimental_file, output_name, names_file):
     """
 
     :param simulated:
@@ -146,7 +184,7 @@ def run_complete(directory, simulated_file, priors_file, experimental_file, outp
 
     priors = cbi.read_file_safe(priors_file)
 
-    fit = cbi.execute_stan(directory, experimental, simulated, priors,
+    fit = cbi.execute_stan(output_directory, experimental, simulated, priors,
                                    iterations, chains, njobs)
 
     bayesian_weights, jsd, crysol_chi2 = cbi.calculate_stats(fit, experimental, simulated)
@@ -155,20 +193,17 @@ def run_complete(directory, simulated_file, priors_file, experimental_file, outp
     #with open(fit_filemame, "wb") as f:
     #    pickle.dump({'fit': fit}, f, protocol=-1)
 
-    # Plotting
-    import arviz
-    import matplotlib
-    matplotlib.use("Agg")
-    axes = arviz.plot_density(fit, var_names=['weights'], show=None)
-    fig = axes.ravel()[0].figure
-    fig.savefig(os.path.join(directory, 'stan_weights.png'))
-
     #TODO: Write it to log somewhere
+    data_labels = []
     for index, fname in enumerate(file_names):
         output_file.write((fname + ':' + str(bayesian_weights[index])) + '\n')
+        data_labels.append(fname)
     output_file.write("JSD : " + str(jsd) + '\n')
     output_file.write("Chi2 :" + str(crysol_chi2) + '\n')
 
+    plot_weights(output_directory, data_labels, fit)
+
+    save_selected_pdbfiles(analysis_directory, output_directory, data_labels)
 
 def run_bioce_from_webserver(params):
     experimental = os.path.join(params['study_folder'],params['dataset1'])
@@ -216,7 +251,8 @@ def run_bioce_from_webserver(params):
         raise
 
     try:
-        run_complete(params['output_folder'], vbi_simulated, vbi_priors, experimental, cbi_output, vbi_file_list)
+        run_complete(params['output_folder'], params['analysis_folder'],
+                     vbi_simulated, vbi_priors, experimental, cbi_output, vbi_file_list)
     except:
         print("Failed to perform Complete analysis")
         job_done = False

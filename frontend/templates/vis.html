@@ -118,7 +118,8 @@
             <h3 style="padding-left: 15px;">Population weights</h3>
         </div>
 
-        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1, file=analysis_folder+'/output/r_'+data_file+'.png') }}"/>
+        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+        file=analysis_folder+'/output/stan_weights.png') }}"/>
     </div>
 
     <!-- ===================================================================== -->
@@ -133,13 +134,16 @@
         <div class="page-header">
             <h3 style="padding-left: 15px;">Models</h3>
         </div>
-         <script src="js/ngl.js"></script>
+         <script src="{{ url_for('static', filename='js/ngl.js') }}"></script>
         <script>
         document.addEventListener("DOMContentLoaded", function () {
-        var stage = new NGL.Stage("viewport");
-        stage.loadFile("rcsb://1crn", {defaultRepresentation: true});
+        var stage = new NGL.Stage("viewport", {backgroundColor:'white'});
+        stage.loadFile("rcsb://1crn").then(function (o) {
+        o.addRepresentation("ball+stick", {colorScheme: "bfactor"});
+        o.autoView();
         });
         </script>
+        <div id="viewport" style="width:400px; height:300px;"></div>
     </div>
 </div>
 
@@ -157,3 +161,5 @@
     $( document ).ready(help);
 </script>
 {% endblock %}
+
+
