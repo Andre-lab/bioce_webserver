@@ -144,6 +144,39 @@ def plot_weights(directory, data_labels, fit):
     #fig = axes.ravel()[0].figure
     #fig.savefig(os.path.join(directory, 'stan_weights.png'))
 
+def plot_fit(directory):
+    """
+
+    :param directory:
+    :param data_labels:
+    :param fit:
+    :return:
+    """
+    import matplotlib
+    import matplotlib.pyplot as plt
+    matplotlib.use("Agg")
+
+    fit_file = os.path.join(directory,'vbi_output.txt.fit')
+    data = read_file_safe(fit_file)
+    qvector = data[:,0]
+    exp_intensities = data[:,1]
+    sim_intensities = data[:, 2]
+    exp_errors = data[:,3]
+
+    fig = plt.figure()
+    plt.plot(qvector, exp_intensities, 'ko', markersize=4, mfc="none")
+    plt.plot(qvector, sim_intensities, '-o', markersize=4)
+    plt.errorbar(qvector, exp_intensities, yerr=exp_errors,
+                 fmt="ko", markersize=6, mfc='none', alpha=0.6, zorder=0)
+
+    plt.yscale('log')
+
+
+    plt.ylabel("$log(Intenisty)$")
+    plt.xlabel("$q [\AA^{-1}]$")
+
+    fig.savefig(os.path.join(directory, 'fit.png'))
+
 def save_selected_pdbfiles(analysis_directory, output_directory, data_labels):
     """
 
@@ -202,7 +235,7 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     output_file.write("Chi2 :" + str(crysol_chi2) + '\n')
 
     plot_weights(output_directory, data_labels, fit)
-
+    plot_fit(output_directory)
     save_selected_pdbfiles(analysis_directory, output_directory, data_labels)
 
 def run_bioce_from_webserver(params):
