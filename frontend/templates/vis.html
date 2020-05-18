@@ -139,13 +139,13 @@
         document.addEventListener("DOMContentLoaded", function () {
         var stage = new NGL.Stage("viewport", {backgroundColor:'white'});
         stage.loadFile("{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
-        file=analysis_folder+'/output/combined.pdb') }}").then(function (o) {
-        o.addRepresentation("cartoon", {colorScheme: "bfactor"});
+        file=analysis_folder+'/output/ensemble.pdb') }}").then(function (o) {
+        o.addRepresentation("cartoon", {colorScheme: "modelindex"});
         o.autoView();
         });
         });
         </script>
-        <div id="viewport" style="width:400px; height:300px;"></div>
+        <div id="viewport" style="width:600px; height:450px;"></div>
     </div>
 </div>
 
@@ -153,8 +153,8 @@
     <!-- ===================================================================== -->
     <!--  LEFT COLUMN  -->
     <div class="col-xs-12 col-sm-6 bootstro title"
-        data-bootstro-title=" Population weights"
-        data-bootstro-content="Population weights and their distributions for inferred ensemble"
+        data-bootstro-title=" Fit"
+        data-bootstro-content="Fit to experimental data"
         data-bootstro-step = "1"
         data-bootstro-placement="right"
         style="border-right:1px solid #eaeaea;">
@@ -171,13 +171,15 @@
     <!-- ===================================================================== -->
 
     <div class="col-xs-12 col-sm-6 bootstro title"
-        data-bootstro-title=" Models"
-        data-bootstro-content="Inferred structural models"
+        data-bootstro-title=" Statistics"
+        data-bootstro-content="Statistics for inferred ensemble"
         data-bootstro-step = "2"
         data-bootstro-placement="left">
         <div class="page-header">
             <h3 style="padding-left: 15px;">Statistics</h3>
         </div>
+        <embed src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+        file=analysis_folder+'/output/cbi_output.txt') }}"/>
     </div>
 </div>
 

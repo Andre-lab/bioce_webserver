@@ -118,18 +118,7 @@
                     </div>
                 </div>
             </div>
-            <!-- ------------------------ Variational or not ------------------------- -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <b>Running mode</b>
 
-                </div>
-                <div class="panel-body">
-                    {{ form.skip_variational() }} Complete Bayesian Inference only (skip Variational)
-                    {{ render_question_mark(tooltips["skip_variational"]) }}
-                    {{ render_field_error(form.skip_variational, 'small_top') }}
-                </div>
-            </div>
             <div class="panel panel-default">
                 <div class="panel-heading"><b> <a href="{{ url_for('tc') }}">
                     Terms and conditions</a> </b>

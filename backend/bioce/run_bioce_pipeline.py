@@ -120,6 +120,21 @@ def process_variational(vbi_output_file, simulated_file, names_file, trm_simulat
     np.savetxt(trm_simulated_file, output_intensities)
     np.savetxt(trm_priors_file, flat_weights)
 
+def combine_models(directory, data_labels):
+    """
+    Combines all avaialable models from output directory
+    :param directory:
+    :return:
+    """
+    output_filename = os.path.join(directory, 'ensemble.pdb')
+    output_file = open(output_filename, 'w')
+    for index, filename in enumerate(data_labels):
+        output_file.write('MODEL '+str(index)+'\n')
+        file_path = os.path.join(directory,filename)
+        lines = open(file_path).readlines()
+        output_file.writelines(lines)
+        output_file.write('ENDMDL')
+    output_file.close()
 
 def plot_weights(directory, data_labels, fit):
     """
@@ -164,8 +179,8 @@ def plot_fit(directory):
     exp_errors = data[:,3]
 
     fig = plt.figure()
-    plt.plot(qvector, exp_intensities, 'ko', markersize=4, mfc="none")
-    plt.plot(qvector, sim_intensities, '-o', markersize=4)
+    plt.plot(qvector, exp_intensities, 'ko', markersize=4, mfc="none", label="experimental")
+    plt.plot(qvector, sim_intensities, '-o', markersize=4, label="fit")
     plt.errorbar(qvector, exp_intensities, yerr=exp_errors,
                  fmt="ko", markersize=6, mfc='none', alpha=0.6, zorder=0)
 
@@ -233,10 +248,12 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
         data_labels.append(fname)
     output_file.write("JSD : " + str(jsd) + '\n')
     output_file.write("Chi2 :" + str(crysol_chi2) + '\n')
+    output_file.close()
 
+    save_selected_pdbfiles(analysis_directory, output_directory, data_labels)
+    combine_models(output_directory, data_labels)
     plot_weights(output_directory, data_labels, fit)
     plot_fit(output_directory)
-    save_selected_pdbfiles(analysis_directory, output_directory, data_labels)
 
 def run_bioce_from_webserver(params):
     experimental = os.path.join(params['study_folder'],params['dataset1'])
