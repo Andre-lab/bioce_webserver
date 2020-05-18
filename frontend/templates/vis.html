@@ -109,24 +109,6 @@
     <!-- ===================================================================== -->
     <!--  LEFT COLUMN  -->
     <div class="col-xs-12 col-sm-6 bootstro title"
-        data-bootstro-title=" Population weights"
-        data-bootstro-content="Population weights and their distributions for inferred ensemble"
-        data-bootstro-step = "1"
-        data-bootstro-placement="right"
-        style="border-right:1px solid #eaeaea;">
-        <div class="page-header">
-            <h3 style="padding-left: 15px;">Population weights</h3>
-        </div>
-
-        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
-        file=analysis_folder+'/output/stan_weights.png') }}"/>
-    </div>
-
-    <!-- ===================================================================== -->
-    <!--  RIGHT CO -->
-    <!-- ===================================================================== -->
-
-    <div class="col-xs-12 col-sm-6 bootstro title"
         data-bootstro-title=" Models"
         data-bootstro-content="Inferred structural models"
         data-bootstro-step = "2"
@@ -146,12 +128,13 @@
         });
         </script>
         <div id="viewport" style="width:600px; height:450px;"></div>
-    </div>
-</div>
 
-<div class="row">
+    </div>
+
     <!-- ===================================================================== -->
-    <!--  LEFT COLUMN  -->
+    <!--  RIGHT CO -->
+    <!-- ===================================================================== -->
+
     <div class="col-xs-12 col-sm-6 bootstro title"
         data-bootstro-title=" Fit"
         data-bootstro-content="Fit to experimental data"
@@ -164,6 +147,24 @@
 
         <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
         file=analysis_folder+'/output/fit.png') }}"/>
+    </div>
+</div>
+
+<div class="row">
+    <!-- ===================================================================== -->
+    <!--  LEFT COLUMN  -->
+    <div class="col-xs-12 col-sm-6 bootstro title"
+        data-bootstro-title=" Population weights"
+        data-bootstro-content="Population weights and their distributions for inferred ensemble"
+        data-bootstro-step = "1"
+        data-bootstro-placement="right"
+        style="border-right:1px solid #eaeaea;">
+        <div class="page-header">
+            <h3 style="padding-left: 15px;">Population weights</h3>
+        </div>
+
+        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+        file=analysis_folder+'/output/stan_weights.png') }}"/>
     </div>
 
     <!-- ===================================================================== -->

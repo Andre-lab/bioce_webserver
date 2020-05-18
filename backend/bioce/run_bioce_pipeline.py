@@ -144,7 +144,7 @@ def plot_weights(directory, data_labels, fit):
     :param fit:
     :return:
     """
-    #import arviz
+    import arviz
     import matplotlib
     matplotlib.use("Agg")
 
@@ -155,9 +155,9 @@ def plot_weights(directory, data_labels, fit):
     fig.savefig(os.path.join(directory, 'stan_weights.png'))
 
     #Arviz solution
-    #axes = arviz.plot_density(fit, var_names=['weights'], show=None, figsize=(400,1200))
-    #fig = axes.ravel()[0].figure
-    #fig.savefig(os.path.join(directory, 'stan_weights.png'))
+    axes = arviz.plot_density(fit, var_names=['weights'], show=None)
+    fig = axes.ravel()[0].figure
+    fig.savefig(os.path.join(directory, 'stan_weight_0.png'))
 
 def plot_fit(directory):
     """

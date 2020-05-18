@@ -19,6 +19,7 @@ import backend.bioce.stan_utility as stan_utility
 from backend.bioce.statistics import calculateChiCrysol, calculateChemShiftsChi, JensenShannonDiv, waic
 from backend.bioce.stan_models import stan_code, stan_code_CS, stan_code_EP, stan_code_EP_CS, \
     psisloo_quanities
+import pickle
 
 def execute_stan(directory, experimental, simulated, priors, iterations, chains, njobs):
     """
@@ -41,24 +42,16 @@ def execute_stan(directory, experimental, simulated, priors, iterations, chains,
 
     #sm = pystan.StanModel(model_code=stan_code+psisloo_quanities)
     sample_filename = os.path.join(directory,'saved_samples.txt')
-    sm = pystan.StanModel(model_code=stan_code)
+
+    if os.path.exists('model.pkl'):
+        sm = pickle.load(open('model.pkl', 'rb'))
+    else:
+        sm = pystan.StanModel(model_code=stan_code)
+        with open('model.pkl', 'wb') as f:
+            pickle.dump(sm, f)
+
     fit = sm.sampling(data=stan_dat, iter=iterations, chains=chains,
                       n_jobs=njobs, sample_file=sample_filename)
-
-    #initial_values = [{"weight[0]":0.05, "weight[1]":0.1, "weight[2]":0.15,
-    #                   "weight[3]":0.3, "weight[4]":0.4, "scale":1}]
-    #fit = sm.optimizing(data=stan_dat, init=initial_values, algorithm="BFGS")
-
-    # fig = fit.plot(pars="weights")
-    # #ax.set_color_cycle(['red', 'black', 'yellow', 'green', 'blue'])
-    # fig.subplots_adjust(wspace=0.8)
-    # fig.savefig("stan_weights.png", dpi=300)
-    #
-    # fig = fit.plot(pars="scale")
-    # fig.subplots_adjust(wspace=0.8)
-    # fig.savefig("stan_scale.png", dpi=300)
-
-    #np.savetxt("target_curve_full.csv", fit.summary()['summary'][-869:-1][:,:2])
 
     return fit
 
