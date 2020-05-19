@@ -293,3 +293,19 @@ def get_study_folder(study_id):
     study_name = study.study_name
     study_folder = os.path.join(user_folder, study_name)
     return study_folder
+
+# -----------------------------------------------------------------------------
+# RESULTS - RENDERING MODELS
+# -----------------------------------------------------------------------------
+
+def get_models_names(cbi_output_file):
+    """
+    Returns a path to the current user's study
+    """
+    cbi_out = open(cbi_output_file)
+    model_names = []
+    for line in cbi_out.readlines():
+        pdb_name = line.split(':')
+        if pdb_name[-3:] == 'pdb':
+            model_names.append(pdb_name)
+    return model_names

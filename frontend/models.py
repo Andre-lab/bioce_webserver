@@ -92,3 +92,10 @@ class Analyses(db.Model):
     weight_cut = db.Column(db.Float())
     timestamp_start = db.Column(db.DateTime)
     timestamp_finish = db.Column(db.DateTime)
+
+
+class Ensemble():
+    def __init__(self, name, weight, error):
+        self.model_name = name
+        self.model_weight = weight
+        self.model_error = error

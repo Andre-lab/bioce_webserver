@@ -151,39 +151,53 @@
 </div>
 
 <div class="row">
-    <!-- ===================================================================== -->
-    <!--  LEFT COLUMN  -->
-    <div class="col-xs-12 col-sm-6 bootstro title"
-        data-bootstro-title=" Population weights"
-        data-bootstro-content="Population weights and their distributions for inferred ensemble"
-        data-bootstro-step = "1"
-        data-bootstro-placement="right"
-        style="border-right:1px solid #eaeaea;">
-        <div class="page-header">
-            <h3 style="padding-left: 15px;">Population weights</h3>
-        </div>
-
-        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
-        file=analysis_folder+'/output/stan_weights.png') }}"/>
+    <div class="page-header">
+            <h3 style="padding-left: 15px;">Population Weights</h3>
     </div>
+     <table class="table table-striped bootstro"
+                data-bootstro-title="Results section"
+                data-bootstro-content="This section lists your uploaded studies.
+                                       <br><br><b>Weight</b>: inferred population weights.
+                                       <br><b>Error</b>: standard mean error.
+                                       <br><b>Distribution</b>: posterior distribution of parameters."
+                data-bootstro-step = "1"
+                data-bootstro-placement="bottom">
+            <thead >
+                <tr>
+                    <th class="col-md-8">Model</th>
+                    <th class="col-md-2 text-center">Weight</th>
+                    <th class="col-md-2 text-center">Error</th>
+                    <th class="col-md-2 text-center">Distribution</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for model in ensemble_models %}
+                <tr>
+                    <!-- -------------------- NAME ------------------------ -->
+                    <td>{{ model.model_name }}</td>
 
-    <!-- ===================================================================== -->
-    <!--  RIGHT CO -->
-    <!-- ===================================================================== -->
+                    <!-- -------------------- WEIGHTS ------------------------ -->
+                    <td class="text-center">
+                        {{ model.model_weight }}
+                    </td>
 
-    <div class="col-xs-12 col-sm-6 bootstro title"
-        data-bootstro-title=" Statistics"
-        data-bootstro-content="Statistics for inferred ensemble"
-        data-bootstro-step = "2"
-        data-bootstro-placement="left">
-        <div class="page-header">
-            <h3 style="padding-left: 15px;">Statistics</h3>
-        </div>
-        <embed src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
-        file=analysis_folder+'/output/cbi_output.txt') }}"/>
-    </div>
+                    <!-- -------------------- ERROR --------------------- -->
+                    <td class="text-center">
+                        {{ model.model_error }}
+                    </td>
+                    <!-- -------------------- DISTRIBUTION ---------------------- -->
+                    <td class="text-center">
+                        <a href="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+                        file=analysis_folder+'/output/stan_weights.png') }}">
+                        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+                        file=analysis_folder+'/output/stan_weights.png') }}" width="100" height="60"/>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
 </div>
-
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/bootstro.js') }}"></script>
 <script type="text/javascript">

@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 from .analysis import run_analysis, terminate_analysis
 from .view_functions import save_study, get_form, save_analysis, \
                            get_studies_array, get_analyses_array, \
-                           get_user_folder, security_check
+                           get_user_folder, security_check, get_models_names
 from backend.utils.check_uploaded_files import clear_up_study
 from . import app, db, models
 from .forms import UploadForm, AnalysisForm
@@ -338,10 +338,28 @@ def vis(user_id, analysis_id, data_file):
     analysis_folder = os.path.join(username, secure_filename(study_name),
                                    secure_filename(analysis_name))
 
+
+    #TODO: Add live settings
+    #INFERRED MODELS
+    #models_name = get_models_names(os.path.join(analysis_folder,'output','cbi_output.txt'))
+    cbi_output_file = os.path.join(analysis_folder,'output','cbi_output.txt')
+    # cbi_out = open(cbi_output_file)
+    # model_names = []
+    # for line in cbi_out.readlines():
+    #     pdb_name = line.split(':')
+    #     if pdb_name[-3:] == 'pdb':
+    #         model_names.append(pdb_name)
+    models_names = ['1.pdb', '2.pdb', '3.pdb']
+    models_weights = [0.31, 0.50, 0.19]
+    models_errors = [0.07, 0.1, 0.03]
+    ensemble_models = []
+    for idx, mname in enumerate(models_names):
+        emodel = models.Ensemble(mname, models_weights[idx], models_errors[idx])
+        ensemble_models.append(emodel)
     return render_template('vis.html', analysis_folder=analysis_folder,
                            analysis_name=analysis_name,
                            user_id=user_id, analysis_id=analysis_id,
-                           data_file=data_file)
+                           data_file=data_file, ensemble_models = ensemble_models)
 
 # =============================================================================
 #
