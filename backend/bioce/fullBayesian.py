@@ -361,16 +361,20 @@ def calculate_stats(fit, experimental, simulated, cs_simulated=None,
         chemical_shifts_on = False
 
     scale = fit.summary(pars='scale')['summary'][0][0]
-    print("Scale from summary", scale)
+    bayesian_weights = fit.summary(pars='weights')['summary'][:,0]
+    bayesian_sem = fit.summary(pars='weights')['summary'][:, 1]
+    bayesian_sd = fit.summary(pars='weights')['summary'][:, 2]
+    bayesian_neff = fit.summary(pars='weights')['summary'][:, -2]
+    bayesian_rhat = fit.summary(pars='weights')['summary'][:, -1]
     combine_curve(experimental, simulated, bayesian_weights, scale)
 
     if chemical_shifts_on:
         chemshift_chi2 = calculateChemShiftsChi(np.dot(bayesian_weights,
                             np.transpose(cs_simulated)), cs_experimental[:,0],
                             cs_experimental[:,1], cs_rms)
-        return bayesian_weights, jsd, crysol_chi2, chemshift_chi2
+        return bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2, chemshift_chi2
     else:
-        return bayesian_weights, jsd, crysol_chi2
+        return bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2
 
 def read_file_safe(filename, dtype="float64"):
     """

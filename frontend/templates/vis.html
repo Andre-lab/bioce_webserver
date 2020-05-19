@@ -165,8 +165,11 @@
             <thead >
                 <tr>
                     <th class="col-md-8">Model</th>
-                    <th class="col-md-2 text-center">Weight</th>
-                    <th class="col-md-2 text-center">Error</th>
+                    <th class="col-md-2 text-center">Weight (mean)</th>
+                    <th class="col-md-2 text-center">Standard error of mean</th>
+                    <th class="col-md-2 text-center">Standard deviation</th>
+                    <th class="col-md-2 text-center">Effective sample size</th>
+                    <th class="col-md-2 text-center">Scale reduction factor (Rhat)</th>
                     <th class="col-md-2 text-center">Distribution</th>
                 </tr>
             </thead>
@@ -174,16 +177,29 @@
                 {% for model in ensemble_models %}
                 <tr>
                     <!-- -------------------- NAME ------------------------ -->
-                    <td>{{ model.model_name }}</td>
-
+                    <td><a href="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+                        file=analysis_folder+'/output/'+model.model_name)}}">{{ model.model_name }}
+                    </a>
+                    </td>
                     <!-- -------------------- WEIGHTS ------------------------ -->
                     <td class="text-center">
                         {{ model.model_weight }}
                     </td>
-
                     <!-- -------------------- ERROR --------------------- -->
                     <td class="text-center">
-                        {{ model.model_error }}
+                        {{ model.model_sem }}
+                    </td>
+                    <!-- -------------------- ERROR --------------------- -->
+                    <td class="text-center">
+                        {{ model.model_sd }}
+                    </td>
+                    <!-- -------------------- neff ------------------------ -->
+                    <td class="text-center">
+                        {{ model.model_neff }}
+                    </td>
+                    <!-- -------------------- Rhat --------------------- -->
+                    <td class="text-center">
+                        {{ model.model_rhat }}
                     </td>
                     <!-- -------------------- DISTRIBUTION ---------------------- -->
                     <td class="text-center">

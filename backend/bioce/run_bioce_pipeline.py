@@ -235,7 +235,7 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     fit = cbi.execute_stan(output_directory, experimental, simulated, priors,
                                    iterations, chains, njobs)
 
-    bayesian_weights, jsd, crysol_chi2 = cbi.calculate_stats(fit, experimental, simulated)
+    bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2 = cbi.calculate_stats(fit, experimental, simulated)
 
     #fit_filemame = os.path.join(directory, 'fit.pkl')
     #with open(fit_filemame, "wb") as f:
@@ -244,7 +244,9 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     #TODO: Write it to log somewhere
     data_labels = []
     for index, fname in enumerate(file_names):
-        output_file.write((fname + ':' + str(bayesian_weights[index])) + '\n')
+        output_file.write(fname + ':' + str(bayesian_weights[index]) + ':' + str(bayesian_sem[index])
+                          + ':' + str(bayesian_sd[index]) + ':' + str(bayesian_neff[index])
+                          + ':' + str(bayesian_rhat[index]) + '\n')
         data_labels.append(fname)
     output_file.write("JSD : " + str(jsd) + '\n')
     output_file.write("Chi2 :" + str(crysol_chi2) + '\n')

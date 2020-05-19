@@ -95,7 +95,10 @@ class Analyses(db.Model):
 
 
 class Ensemble():
-    def __init__(self, name, weight, error):
+    def __init__(self, name, weight, sem, sd, neff, rhat):
         self.model_name = name
         self.model_weight = weight
-        self.model_error = error
+        self.model_sem = sem
+        self.model_sd = sd
+        self.model_neff = neff
+        self.model_rhat = rhat

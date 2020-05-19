@@ -304,8 +304,21 @@ def get_models_names(cbi_output_file):
     """
     cbi_out = open(cbi_output_file)
     model_names = []
+    model_weights = []
+    model_sem = []
+    model_sd = []
+    model_neff = []
+    model_rhat = []
     for line in cbi_out.readlines():
-        pdb_name = line.split(':')
+        result_row = line.split(':')
+        pdb_name = result_row[0]
         if pdb_name[-3:] == 'pdb':
             model_names.append(pdb_name)
-    return model_names
+        else:
+            break
+        model_weights.append(round(float(result_row[1]),2))
+        model_sem.append(round(float(result_row[2]),2))
+        model_sd.append(round(float(result_row[3]), 2))
+        model_neff.append(round(float(result_row[4]),1))
+        model_rhat.append(round(float(result_row[5]),1))
+    return model_names, model_weights, model_sem, model_sd, model_neff, model_rhat
