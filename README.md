@@ -1,6 +1,10 @@
 
 # Bioce Webserver
 
+<p align="center">
+  <img src="https://github.com/danielhomola/science_flask/blob/master/frontend/static/img/sf_flowchart.png?raw=true" alt="Science Flask"/>
+</p>
+
 ## Features
 
 - __Academic registration process:__ User's are only allowed to register with a
@@ -43,7 +47,7 @@ program crashes gracefully, letting the user know what happened.
 Bootstrap makes writing good looking HTML pages dead easy.
 - __Tool tips and tours__: Explain to the user how your application works with 
 interactive tours (available on all the above listed pages) and tooltips.
-- __Python3__: The whole project is written in Python3.5 (because it's 2017).
+- __Python3__: The whole project is written in Python3.7.
 
 ## Installation
 
