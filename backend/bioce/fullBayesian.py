@@ -321,7 +321,7 @@ def execute_bws(experimental, simulated, priors, file_names, threshold,
 #     :return:
 #     """
 
-def calculate_stats(fit, experimental, simulated, cs_simulated=None,
+def calculate_stats(output_directory, fit, experimental, simulated, cs_simulated=None,
                     cs_rms=None, cs_experimental=None):
     """
     Calculates statistics based on stan model
@@ -366,7 +366,7 @@ def calculate_stats(fit, experimental, simulated, cs_simulated=None,
     bayesian_sd = fit.summary(pars='weights')['summary'][:, 2]
     bayesian_neff = fit.summary(pars='weights')['summary'][:, -2]
     bayesian_rhat = fit.summary(pars='weights')['summary'][:, -1]
-    combine_curve(experimental, simulated, bayesian_weights, scale)
+    combine_curve(output_directory, experimental, simulated, bayesian_weights, scale)
 
     if chemical_shifts_on:
         chemshift_chi2 = calculateChemShiftsChi(np.dot(bayesian_weights,
@@ -388,7 +388,7 @@ def read_file_safe(filename, dtype="float64"):
         print(os.strerror(err.errno))
     return results
 
-def combine_curve(experimental, simulated, weights, scale):
+def combine_curve(output_directory, experimental, simulated, weights, scale):
     """
 
     :param simulated:
@@ -400,7 +400,7 @@ def combine_curve(experimental, simulated, weights, scale):
     exp_intensities = experimental[:,1]
     exp_errors = experimental[:,2]
     combined = scale*np.dot(weights, np.transpose(simulated))
-    np.savetxt("bayesianEstimateCurve.txt",
+    np.savetxt(os.path.join(output_directory,"cbi_output.txt.fit"),
                np.transpose((q_column, exp_intensities, combined, exp_errors)))
 
 if __name__=="__main__":

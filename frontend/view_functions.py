@@ -55,7 +55,6 @@ def save_study(form, files):
         files_dict[field] = filename
         f.save(path)
         f.close()
-    print('files dict', files_dict)
     # -------------------------------------------------------------------------
     # check uploaded files
     # this import must be here, because get_user_folder is needed by check_files

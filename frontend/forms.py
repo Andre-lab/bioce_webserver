@@ -235,12 +235,15 @@ class UniqueAnalysisName(object):
 # ------------------------------------------------------------------------------
 
 number_ranges = {
-    'wcut': NumberRange(min=.001, max=0.5, message='Has to be between 0.001 and 0.5')
+    'wcut': NumberRange(min=.001, max=0.5, message='Has to be between 0.001 and 0.5'),
+    'iter': NumberRange(min=2000, max=4000, message='Has to be between 1000 and 4000')
 }
 
 class AnalysisForm(FlaskForm):
     analysis_name = StringField('Name of the analysis', [InputRequired(),
                                 Length(min=3,max=25), UniqueAnalysisName()])
     weight_cut = DecimalField('Weight threshold for excluding models',
-                              [number_ranges['wcut']], default=0.001)
+                              [number_ranges['wcut']], default=0.01)
+    iterations = IntegerField('Number of iterations',
+                              [number_ranges['iter']], default=2000)
     check = BooleanField('')

@@ -204,9 +204,9 @@
                     <!-- -------------------- DISTRIBUTION ---------------------- -->
                     <td class="text-center">
                         <a href="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
-                        file=analysis_folder+'/output/stan_weights.png') }}">
+                        file=analysis_folder+'/output/stan_weight_'+model.model_name+'.png') }}">
                         <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
-                        file=analysis_folder+'/output/stan_weights.png') }}" width="100" height="60"/>
+                        file=analysis_folder+'/output/stan_weight_'+model.model_name+'.png') }}" width="100" height="60"/>
                         </a>
                     </td>
                 </tr>

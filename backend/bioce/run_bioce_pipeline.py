@@ -144,52 +144,58 @@ def plot_weights(directory, data_labels, fit):
     :param fit:
     :return:
     """
-    import arviz
     import matplotlib
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     matplotlib.use("Agg")
 
     #Pytsan native solution - deprecated
-    fig = fit.plot(pars="weights")
+    #fig = fit.plot(pars="weights")
     #ax.set_color_cycle(['red', 'black', 'yellow', 'green', 'blue'])
-    fig.subplots_adjust(wspace=0.8)
-    fig.savefig(os.path.join(directory, 'stan_weights.png'))
+    #fig.subplots_adjust(wspace=0.8)
+    #fig.savefig(os.path.join(directory, 'stan_weights.png'))
 
     #Arviz solution
-    axes = arviz.plot_density(fit, var_names=['weights'], show=None)
-    fig = axes.ravel()[0].figure
-    fig.savefig(os.path.join(directory, 'stan_weight_0.png'))
+    fit_df = fit.to_dataframe()
+    #axes = arviz.plot_density(fit, var_names=['weights'], show=None)
+    #fig = axes.ravel()[0].figure
+    for index, data_name in enumerate(data_labels):
+        plt.figure()
+        sns.kdeplot(fit_df['weights['+str(index+1)+']'])
+        plt.ylabel('Frequency')
+        plt.savefig(os.path.join(directory, 'stan_weight_'+data_name+'.png'))
 
-def plot_fit(directory):
+def plot_fit(directory, chi2):
     """
 
     :param directory:
     :param data_labels:
     :param fit:
+    :param chi2:
     :return:
     """
     import matplotlib
     import matplotlib.pyplot as plt
     matplotlib.use("Agg")
 
-    fit_file = os.path.join(directory,'vbi_output.txt.fit')
+    fit_file = os.path.join(directory,'cbi_output.txt.fit')
     data = read_file_safe(fit_file)
     qvector = data[:,0]
     exp_intensities = data[:,1]
-    sim_intensities = data[:, 2]
+    sim_intensities = data[:,2]
     exp_errors = data[:,3]
 
     fig = plt.figure()
+    ax = fig.add_subplot(111)
     plt.plot(qvector, exp_intensities, 'ko', markersize=4, mfc="none", label="experimental")
     plt.plot(qvector, sim_intensities, '-o', markersize=4, label="fit")
     plt.errorbar(qvector, exp_intensities, yerr=exp_errors,
                  fmt="ko", markersize=6, mfc='none', alpha=0.6, zorder=0)
 
     plt.yscale('log')
-
-
-    plt.ylabel("$log(Intenisty)$")
+    plt.ylabel("#Intenisty$")
     plt.xlabel("$q [\AA^{-1}]$")
-
+    plt.text(0.8,0.8,r'$\chi^2 = $'+str(round(chi2,2)), transform=ax.transAxes)
     fig.savefig(os.path.join(directory, 'fit.png'))
 
 def save_selected_pdbfiles(analysis_directory, output_directory, data_labels):
@@ -235,11 +241,9 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     fit = cbi.execute_stan(output_directory, experimental, simulated, priors,
                                    iterations, chains, njobs)
 
-    bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2 = cbi.calculate_stats(fit, experimental, simulated)
+    bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2 = \
+        cbi.calculate_stats(output_directory, fit, experimental, simulated)
 
-    #fit_filemame = os.path.join(directory, 'fit.pkl')
-    #with open(fit_filemame, "wb") as f:
-    #    pickle.dump({'fit': fit}, f, protocol=-1)
 
     #TODO: Write it to log somewhere
     data_labels = []
@@ -255,7 +259,7 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     save_selected_pdbfiles(analysis_directory, output_directory, data_labels)
     combine_models(output_directory, data_labels)
     plot_weights(output_directory, data_labels, fit)
-    plot_fit(output_directory)
+    plot_fit(output_directory, crysol_chi2)
 
 def run_bioce_from_webserver(params):
     experimental = os.path.join(params['study_folder'],params['dataset1'])
