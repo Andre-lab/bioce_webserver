@@ -59,13 +59,7 @@ cd bioce_webserver
 Create virtual enviroment from yaml file
 ```
 conda env create -f requirments.yaml
-```
-
-Install all the required Python packages into your virtual environment. Also
-install RabbitMQ, [here's how](https://www.rabbitmq.com/download.html) if you're not on Ubuntu.
-```
-pip install -r requirements.txt
-sudo apt-get install rabbitmq-server
+conda activate bioce_web
 ```
 
 Customize `frontend/config_example.py` and rename it to `frontend/config.py`
