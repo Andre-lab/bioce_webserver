@@ -1,6 +1,8 @@
 
 # Bioce Webserver
 
+Adapted from: [Science Flask](https://github.com/danielhomola/science_flask/blob/master/README.md)
+
 <p align="center">
   <img src="https://github.com/danielhomola/science_flask/blob/master/frontend/static/img/sf_flowchart.png?raw=true" alt="Science Flask"/>
 </p>
@@ -67,8 +69,7 @@ Customize `frontend/config_example.py` and rename it to `frontend/config.py`
 2. Setup the username, email, password for the admin. You can then log in with
  these credentials and go to the Admin profile from the Profile page. Then you
  can edit all the tables of the database from online.
-3. Setup mail sending. I used [AWS's SES service](http://docs.aws.amazon.com/ses/latest/DeveloperGuide/quick-start.html),
- but you can use [Gmail](http://stackoverflow.com/questions/37058567/configure-flask-mail-to-use-gmail) also. 
+3. Setup mail sending. You can use [Gmail](http://stackoverflow.com/questions/37058567/configure-flask-mail-to-use-gmail) for example. 
 
 
 Create the SQLite database of the app and add the admin user.
