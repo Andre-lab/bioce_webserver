@@ -193,7 +193,7 @@ def plot_fit(directory, chi2):
                  fmt="ko", markersize=6, mfc='none', alpha=0.6, zorder=0)
 
     plt.yscale('log')
-    plt.ylabel("#Intenisty$")
+    plt.ylabel("$Intenisty$")
     plt.xlabel("$q [\AA^{-1}]$")
     plt.text(0.8,0.8,r'$\chi^2 = $'+str(round(chi2,2)), transform=ax.transAxes)
     fig.savefig(os.path.join(directory, 'fit.png'))
