@@ -139,7 +139,7 @@ the submitted jobs have finished running.
 - The models of the app connect to an __SQLite__ database by default but this
 could be changed easily.
 
-- The emails are sent through __Amazon's free SES servcice__, but this can be
+- The emails are sent through __gmail service__, but this can be
 changed to any mail server.
 
 ## Overall structure of Bioce Webserver 
