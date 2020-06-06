@@ -21,7 +21,7 @@ def read_file_safe(filename, dtype="float64"):
     :return:
     """
     try:
-        results = np.genfromtxt(filename, dtype=dtype, delimiter=";")
+        results = np.genfromtxt(filename, dtype=dtype)
     except IOError as err:
         print(os.strerror(err.errno))
     return results
@@ -161,7 +161,7 @@ def make_bar_plot():
     fig.savefig("bar_plot.png", dpi=600, bbox_inches='tight')
     plt.show()
 
-def make_residue_plot(data, combined_data, data_name, log=False):
+def make_residue_plot(data, data_name, log=False):
     """
     Making residual plot. Difference between experimental and simulated curves
     Scaling factor needs to be applied first
@@ -172,16 +172,60 @@ def make_residue_plot(data, combined_data, data_name, log=False):
     """
     qvector = data[:,0]
     exp_intensities = data[:,1]
-    exp_errors = data[:,2]
-    sim_intensities = combined_data
-    line1, = plt.plot(qvector, (exp_intensities - sim_intensities)/exp_errors, 'o')
-    #plt.fill_between(qvector, -exp_errors, exp_errors, color='lightyellow')
-    #plt.legend(handles=[line1])
+    exp_errors = data[:,3]
+    sim_intensities = data[:,2]
+    plt.plot(qvector, (exp_intensities - sim_intensities)/exp_errors, 'o')
+    fig = matplotlib.pyplot.gcf()
+    fig.set_size_inches(10, 3)
+    fig.tight_layout()
+    yint = [-3, 0, 3]
+    plt.yticks(yint)
+    plt.ylim(-4.5,4.5)
     plt.ylabel("$\Delta/\sigma$")
     plt.xlabel("$q[\AA^{-1}]$")
-    plt.savefig(data_name+".png", dpi=600)
+    fig.savefig(data_name+".png", dpi=600)
     plt.show()
 
+def make_intensity_residue_plot(data, data_name):
+    #matplotlib.rcParams.update({'font.size': 18})
+
+    qvector = data[:, 0]
+    exp_intensities = data[:, 1]
+    exp_errors = data[:, 3]
+    sim_intensities = data[:, 2]
+    residuals = (exp_intensities - sim_intensities)/exp_errors
+
+    #ax1 = plt.subplot(211)
+    ax1 = plt.subplot2grid((3, 1), (0, 0), rowspan=2)
+    plt.plot(qvector, exp_intensities, 'ko', markersize=3, mfc="none", zorder=1)
+    plt.plot(qvector, sim_intensities, 'o', markersize=2, zorder=2)
+    plt.errorbar(qvector, exp_intensities, yerr=exp_errors,
+                 fmt="ko", markersize=3, mfc='none', capsize=2, zorder=0, ecolor='gray')
+    plt.yscale('log')
+    #plt.xscale('log')
+    plt.ylim(1e-6, 0.009)
+    plt.ylabel("$Intenisty$")
+    #plt.xlabel("$q [\AA^{-1}]$")
+    plt.setp(ax1.get_xticklabels(), fontsize=14)
+    plt.setp(ax1.get_yticklabels(), fontsize=14)
+    plt.setp(ax1.get_xticklabels(), visible=False)
+
+    #ax2 = plt.subplot(212, sharex=ax1)
+    ax2 = plt.subplot2grid((3, 1), (2, 0))
+    #plt.setp(ax2.get_xticklabels(), visible=False)
+    plt.plot(qvector, residuals, 'o',  markersize=3)
+    yint = [-3, 0, 3]
+    plt.yticks(yint)
+    plt.ylim(-4.5, 4.5)
+    plt.ylabel("$\Delta/\sigma$")
+    plt.xlabel("$q[\AA^{-1}]$")
+    plt.setp(ax2.get_xticklabels(), fontsize=14)
+    plt.setp(ax2.get_yticklabels(), fontsize=14)
+
+    plt.subplots_adjust(hspace=0.05)
+
+    plt.savefig("SASfit.png", dpi=300, bbox_inches='tight')
+    plt.show()
 
 if __name__=="__main__":
     doc = """
@@ -206,5 +250,6 @@ if __name__=="__main__":
 
     #combined_data_file = options.combined_data_file
     #combined_data = read_file_safe(combined_data_file)
-    make_ppc_plot(data,data_file)
+    #make_ppc_plot(data,data_file)
+    make_intensity_residue_plot(data, data_file)
     #make_bar_plot()
