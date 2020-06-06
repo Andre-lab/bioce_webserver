@@ -12,15 +12,16 @@ import optparse
 
 import numpy as np
 import pystan
-import psisloo
-import matplotlib.pyplot as plt
-import stan_utility
+import backend.bioce.psisloo as psisloo
+import backend.bioce.stan_utility as stan_utility
 
-from statistics import calculateChiCrysol, calculateChemShiftsChi, JensenShannonDiv, waic, mean_for_weights, me_log_lik
-from stan_models import stan_code, stan_code_CS, stan_code_EP, stan_code_EP_CS, \
-    psisloo_quanities, posterior_predict_quanities
 
-def execute_stan(experimental, simulated, priors, iterations, chains, njobs):
+from backend.bioce.statistics import calculateChiCrysol, calculateChemShiftsChi, JensenShannonDiv, waic
+from backend.bioce.stan_models import stan_code, stan_code_CS, stan_code_EP, stan_code_EP_CS, \
+    psisloo_quanities
+import pickle
+
+def execute_stan(directory, experimental, simulated, priors, iterations, chains, njobs):
     """
 
     :param experimental:
@@ -40,24 +41,18 @@ def execute_stan(experimental, simulated, priors, iterations, chains, njobs):
             "priors":priors}
 
     #sm = pystan.StanModel(model_code=stan_code+psisloo_quanities)
-    sm = pystan.StanModel(model_code=stan_code)
+    sample_filename = os.path.join(directory,'saved_samples.txt')
+
+    if os.path.exists('model.pkl'):
+        sm = pickle.load(open('model.pkl', 'rb'))
+    else:
+        sm = pystan.StanModel(model_code=stan_code)
+        with open('model.pkl', 'wb') as f:
+            pickle.dump(sm, f)
+
     fit = sm.sampling(data=stan_dat, iter=iterations, chains=chains,
-                      n_jobs=njobs, sample_file="saved_samples.txt")
+                      n_jobs=njobs, sample_file=sample_filename)
 
-    #initial_values = [{"weight[0]":0.05, "weight[1]":0.1, "weight[2]":0.15,
-    #                   "weight[3]":0.3, "weight[4]":0.4, "scale":1}]
-    #fit = sm.optimizing(data=stan_dat, init=initial_values, algorithm="BFGS")
-
-    fig = fit.plot(pars="weights")
-    #ax.set_color_cycle(['red', 'black', 'yellow', 'green', 'blue'])
-    fig.subplots_adjust(wspace=0.8)
-    fig.savefig("stan_weights.png", dpi=300)
-
-    fig = fit.plot(pars="scale")
-    fig.subplots_adjust(wspace=0.8)
-    fig.savefig("stan_scale.png", dpi=300)
-
-    #np.savetxt("target_curve_full.csv", fit.summary()['summary'][-869:-1][:,:2])
     return fit
 
 
@@ -326,7 +321,7 @@ def execute_bws(experimental, simulated, priors, file_names, threshold,
 #     :return:
 #     """
 
-def calculate_stats(fit, experimental, simulated, cs_simulated=None,
+def calculate_stats(output_directory, fit, experimental, simulated, cs_simulated=None,
                     cs_rms=None, cs_experimental=None):
     """
     Calculates statistics based on stan model
@@ -366,16 +361,20 @@ def calculate_stats(fit, experimental, simulated, cs_simulated=None,
         chemical_shifts_on = False
 
     scale = fit.summary(pars='scale')['summary'][0][0]
-    print("Scale from summary", scale)
-    combine_curve(experimental, simulated, bayesian_weights, scale)
+    bayesian_weights = fit.summary(pars='weights')['summary'][:,0]
+    bayesian_sem = fit.summary(pars='weights')['summary'][:, 1]
+    bayesian_sd = fit.summary(pars='weights')['summary'][:, 2]
+    bayesian_neff = fit.summary(pars='weights')['summary'][:, -2]
+    bayesian_rhat = fit.summary(pars='weights')['summary'][:, -1]
+    combine_curve(output_directory, experimental, simulated, bayesian_weights, scale)
 
     if chemical_shifts_on:
         chemshift_chi2 = calculateChemShiftsChi(np.dot(bayesian_weights,
                             np.transpose(cs_simulated)), cs_experimental[:,0],
                             cs_experimental[:,1], cs_rms)
-        return bayesian_weights, jsd, crysol_chi2, chemshift_chi2
+        return bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2, chemshift_chi2
     else:
-        return bayesian_weights, jsd, crysol_chi2
+        return bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2
 
 def read_file_safe(filename, dtype="float64"):
     """
@@ -389,7 +388,7 @@ def read_file_safe(filename, dtype="float64"):
         print(os.strerror(err.errno))
     return results
 
-def combine_curve(experimental, simulated, weights, scale):
+def combine_curve(output_directory, experimental, simulated, weights, scale):
     """
 
     :param simulated:
@@ -401,7 +400,7 @@ def combine_curve(experimental, simulated, weights, scale):
     exp_intensities = experimental[:,1]
     exp_errors = experimental[:,2]
     combined = scale*np.dot(weights, np.transpose(simulated))
-    np.savetxt("bayesianEstimateCurve.txt",
+    np.savetxt(os.path.join(output_directory,"cbi_output.txt.fit"),
                np.transpose((q_column, exp_intensities, combined, exp_errors)))
 
 if __name__=="__main__":

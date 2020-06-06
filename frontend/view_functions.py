@@ -43,7 +43,6 @@ def save_study(form, files):
     # new user? make folder
     if not os.path.exists(user_folder):
         os.makedirs(user_folder)
-
     user_data_folder = os.path.join(user_folder, study_folder)
     if not os.path.exists(user_data_folder):
         os.makedirs(user_data_folder)
@@ -52,10 +51,10 @@ def save_study(form, files):
     for field, f in files.items():
         filename = secure_filename(f.filename)
         path = os.path.join(user_data_folder, filename)
+        print("Saving file to ", path)
         files_dict[field] = filename
         f.save(path)
         f.close()
-
     # -------------------------------------------------------------------------
     # check uploaded files
     # this import must be here, because get_user_folder is needed by check_files
@@ -74,9 +73,6 @@ def save_study_to_db(files_dict, form):
     """
     study = models.Studies(author=current_user,
                            study_name=secure_filename(form.study_name.data),
-                           dataset1_type=form.dataset1_type.data,
-                           dataset2_type=form.dataset2_type.data,
-                           dataset3_type=form.dataset3_type.data,
                            skip_variational= bool(form.skip_variational.data),
                            timestamp=datetime.datetime.utcnow())
 
@@ -167,9 +163,7 @@ def save_analysis_to_db(form, study_id):
                                study=models.Studies.query.get(study_id),
                                analysis_name=secure_filename(form.analysis_name.data),
                                status=1,
-                               model_names=form.model_names.data,
-                               chi2=form.chi2.data,
-                               jsd=form.jsd.data,
+                               weight_cut=form.weight_cut.data,
                                timestamp_start=datetime.datetime.utcnow())
     db.session.add(analysis)
     db.session.commit()
@@ -199,7 +193,7 @@ def get_studies_array():
 
         # get files of study
         params = []
-        params.append({'field':'Multi-omics study', 'value': False})
+        params.append({'field':'Skip Variational', 'value': False})
         study_dict['params'] = params
 
         files = []
@@ -230,7 +224,7 @@ def get_analyses_array():
         analysis_dict['analysis_name'] = analysis.analysis_name
         study = models.Studies.query.get(analysis.study_id)
         study_name = study.study_name
-        analysis_dict['data_file'] = 'dataset1_2'
+        analysis_dict['data_file'] = 'analysis_results'
         analysis_dict['status'] = analysis.status
 
         # build path for results .zip file
@@ -242,9 +236,8 @@ def get_analyses_array():
         # collect all params for the analysis
         params = []
         params.append({'field':'Study name', 'value': study_name})
-        param_names = ['Model Names', 'Chi2',
-                       'Jensen-Shannon divergence']
-        param_fields = ['model_names', 'chi2', 'jsd']
+        param_names = ['Weight Cut']
+        param_fields = ['weight_cut']
         for i, p in enumerate(param_fields):
             field = getattr(analysis, p)
             if field is not None:
@@ -299,3 +292,32 @@ def get_study_folder(study_id):
     study_name = study.study_name
     study_folder = os.path.join(user_folder, study_name)
     return study_folder
+
+# -----------------------------------------------------------------------------
+# RESULTS - RENDERING MODELS
+# -----------------------------------------------------------------------------
+
+def get_models_names(cbi_output_file):
+    """
+    Returns a path to the current user's study
+    """
+    cbi_out = open(cbi_output_file)
+    model_names = []
+    model_weights = []
+    model_sem = []
+    model_sd = []
+    model_neff = []
+    model_rhat = []
+    for line in cbi_out.readlines():
+        result_row = line.split(':')
+        pdb_name = result_row[0]
+        if pdb_name[-3:] == 'pdb':
+            model_names.append(pdb_name)
+        else:
+            break
+        model_weights.append(round(float(result_row[1]),2))
+        model_sem.append(round(float(result_row[2]),2))
+        model_sd.append(round(float(result_row[3]), 2))
+        model_neff.append(round(float(result_row[4]),1))
+        model_rhat.append(round(float(result_row[5]),1))
+    return model_names, model_weights, model_sem, model_sd, model_neff, model_rhat

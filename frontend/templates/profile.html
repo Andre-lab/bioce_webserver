@@ -44,7 +44,6 @@
                 data-bootstro-title="Studies section"
                 data-bootstro-content="This section lists your uploaded studies.
                                        <br><br><b>Files</b>: roll your mouse over this button to see the files you uploaded.
-                                       <br><b>Params</b>: roll your mouse over this button to see the parameters of your study.
                                        <br><b>Analyse</b>: takes you to the analysis form.
                                        <br><b>Delete</b>: deletes study with all connected analyses."
                 data-bootstro-step = "1"
@@ -53,7 +52,7 @@
                 <tr>
                     <th class="col-md-8">Name</th>
                     <th class="col-md-2 text-center">Files</th>
-                    <th class="col-md-2 text-center">Params</th>
+
 
                     <th class="col-md-2 text-center">Analyse</th>
                     <th class="col-md-2 text-center">Delete</th>
@@ -70,10 +69,7 @@
                         {{ render_files_and_params(study.files, "fa fa-file-text", "Files of study") }}
                     </td>
 
-                    <!-- -------------------- PARAMS ----------------------- -->
-                    <td class="text-center">
-                        {{ render_files_and_params(study.params, "fa fa-gear", "Parameters of study") }}
-                    </td>
+
 
                     <!-- -------------------- ANALYSE --------------------- -->
                     <td>

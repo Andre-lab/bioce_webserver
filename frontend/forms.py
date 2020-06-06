@@ -94,12 +94,9 @@ name_validator = [InputRequired(), Length(min=3,max=50)]
 
 class UploadForm(FlaskForm):
     file_sel = 'Please select a file.'
-    study_name = StringField('Name of the study', [InputRequired(),
-                             Length(min=3,max=25), UniqueDatasetName()])
-    dataset1 = FileField('Experimental data', [DataRequired(file_sel),
-                         ExtensionCheck(exts=['.dat','.txt'])])
-    dataset2 = FileField('PDB files', [DataRequired(file_sel),
-                                            ExtensionCheck(exts=['.zip', '.gz'])])
+    study_name = StringField('Name of the study', [InputRequired(), Length(min=3,max=25), UniqueDatasetName()])
+    dataset1 = FileField('Experimental data', [DataRequired(file_sel), ExtensionCheck(exts=['.dat','.txt'])])
+    dataset2 = FileField('PDB files', [DataRequired(file_sel), ExtensionCheck(exts=['.zip', '.gz'])])
     dataset3 = FileField('Simulated file', [ExtensionCheck(exts=['.txt', '.sim'])])
     skip_variational = BooleanField('Skip variational')
 
@@ -237,16 +234,16 @@ class UniqueAnalysisName(object):
 # DATA FOR FS METHOD, MULTI CORR METHOD SELECT-FIELD
 # ------------------------------------------------------------------------------
 
+number_ranges = {
+    'wcut': NumberRange(min=.001, max=0.5, message='Has to be between 0.001 and 0.5'),
+    'iter': NumberRange(min=2000, max=4000, message='Has to be between 1000 and 4000')
+}
+
 class AnalysisForm(FlaskForm):
     analysis_name = StringField('Name of the analysis', [InputRequired(),
                                 Length(min=3,max=25), UniqueAnalysisName()])
-    # model_names = SelectField('Method for correction', coerce=str,
-    #                                 choices=multi_data, default='fdr_bh')
-    # chi2 = DecimalField('&alpha; for the multiple correction method',
-    #                          [number_ranges['alpha']], default=0.0)
-    # jsd = IntegerField('Number of top variance feattures',
-    #                         [number_ranges['feat_num']], default=0.0)
-    model_names = 'model1.pdb'
-    chi2 = 0.0
-    jsd = 0.0
+    weight_cut = DecimalField('Weight threshold for excluding models',
+                              [number_ranges['wcut']], default=0.01)
+    iterations = IntegerField('Number of iterations',
+                              [number_ranges['iter']], default=2000)
     check = BooleanField('')

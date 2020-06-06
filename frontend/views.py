@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 from .analysis import run_analysis, terminate_analysis
 from .view_functions import save_study, get_form, save_analysis, \
                            get_studies_array, get_analyses_array, \
-                           get_user_folder, security_check
+                           get_user_folder, security_check, get_models_names
 from backend.utils.check_uploaded_files import clear_up_study
 from . import app, db, models
 from .forms import UploadForm, AnalysisForm
@@ -69,6 +69,7 @@ def upload():
 
         # ---------------------------------------------------------------------
         # we got a form that needs to be validated
+        print('Check in validate method', check)
         if check:
             if form.validate_on_submit():
                 # we passed validation, so let's return OK
@@ -80,16 +81,17 @@ def upload():
         # ---------------------------------------------------------------------
         # we got a form, that has passed validation, let's save the files
         else:
-            try:
-                return save_study(form, request.files)
-            except:
-                # couldn't save the files for some reason, let's try again and
-                # clear up folder to make sure no corrupted files left behind
-                user_folder = get_user_folder()
-                study_folder = secure_filename(form.study_name.data)
-                user_data_folder = os.path.join(user_folder, study_folder)
-                clear_up_study(user_data_folder)
-                return json.dumps(dict(status='invalid'))
+            print('No validation', check)
+            #try:
+            return save_study(form, request.files)
+            # except:
+            #     # couldn't save the files for some reason, let's try again and
+            #     # clear up folder to make sure no corrupted files left behind
+            #     user_folder = get_user_folder()
+            #     study_folder = secure_filename(form.study_name.data)
+            #     user_data_folder = os.path.join(user_folder, study_folder)
+            #     clear_up_study(user_data_folder)
+            #     return json.dumps(dict(status='invalid'))
 
     # -------------------------------------------------------------------------
     # render the form for the first time via GET
@@ -324,7 +326,7 @@ def vis(user_id, analysis_id, data_file):
     if not security_check(user_id, analysis_id, True):
         abort(403)
 
-    if data_file not in ['dataset1_2', 'dataset1', 'dataset2', 'dataset3']:
+    if data_file not in ['analysis_results', 'dataset1', 'dataset2', 'dataset3']:
         abort(403)
 
     # get study_folder, i.e. location of dashboard.js and dashboard.json
@@ -336,10 +338,23 @@ def vis(user_id, analysis_id, data_file):
     analysis_folder = os.path.join(username, secure_filename(study_name),
                                    secure_filename(analysis_name))
 
+
+    #TODO: Add live settings
+    #INFERRED MODELS
+
+    cbi_output_file = os.path.join('userData',analysis_folder,'output','cbi_output.txt')
+    models_names, models_weights, models_sem, models_sd, models_neff, models_rhat = get_models_names(cbi_output_file )
+    # models_names = ['1.pdb', '2.pdb', '3.pdb']
+    # models_weights = [0.31, 0.50, 0.19]
+    # models_errors = [0.07, 0.1, 0.03]
+    ensemble_models = []
+    for idx, mname in enumerate(models_names):
+        emodel = models.Ensemble(mname, models_weights[idx], models_sem[idx], models_sd[idx], models_neff[idx], models_rhat[idx])
+        ensemble_models.append(emodel)
     return render_template('vis.html', analysis_folder=analysis_folder,
                            analysis_name=analysis_name,
                            user_id=user_id, analysis_id=analysis_id,
-                           data_file=data_file)
+                           data_file=data_file, ensemble_models = ensemble_models)
 
 # =============================================================================
 #

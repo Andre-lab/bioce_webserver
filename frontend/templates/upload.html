@@ -92,13 +92,13 @@
             </div>
             <!-- ----------------------- DATASET 2 ------------------------ -->
             <div class="panel panel-default">
-                <div class="panel-heading"><b>PDB files (required)</b></div>
+                <div class="panel-heading"><b>Structural library (required)</b></div>
                 <div class="panel-body">
                     <div class="row" id="dataset_panel2">
                         <div class="col-lg-6">
                             {{ form.dataset2.label }}
                             {{ render_question_mark(tooltips["dataset2"]) }}
-                            {{ form.dataset2(accept=".zip") }}
+                            {{ form.dataset2(accept=".zip,.gz") }}
                             {{ render_field_error(form.dataset2, 'small_top') }}
                         </div>
                     </div>
@@ -118,18 +118,7 @@
                     </div>
                 </div>
             </div>
-            <!-- ------------------------ Variational or not ------------------------- -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <b>Running mode</b>
 
-                </div>
-                <div class="panel-body">
-                    {{ form.skip_variational() }} Complete Bayesian Inference only (skip Variational)
-                    {{ render_question_mark(tooltips["skip_variational"]) }}
-                    {{ render_field_error(form.skip_variational) }}
-                </div>
-            </div>
             <div class="panel panel-default">
                 <div class="panel-heading"><b> <a href="{{ url_for('tc') }}">
                     Terms and conditions</a> </b>

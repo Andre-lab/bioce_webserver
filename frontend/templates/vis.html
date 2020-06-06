@@ -99,7 +99,7 @@
         data-bootstro-placement="bottom">
         <h2 style="padding-left: 15px;">
             <b>{{analysis_name}} </b> <span style="color: #bebebe">|</span>
-            {{ dataset_names[0] }}
+
             <a id="help" href="#" ><span class="fa fa-question" aria-hidden="true" style="float: right; padding-top: 0px; padding-right: 10px; font-size: 1em;"></span></a>
         </h2>
     </div>
@@ -109,17 +109,26 @@
     <!-- ===================================================================== -->
     <!--  LEFT COLUMN  -->
     <div class="col-xs-12 col-sm-6 bootstro title"
-        data-bootstro-title=" Correlations"
-        data-bootstro-content="This is a heatmap of the correlations that were calculated b
-                               between the features with highest variance."
-        data-bootstro-step = "1"
-        data-bootstro-placement="right"
-        style="border-right:1px solid #eaeaea;">
+        data-bootstro-title=" Models"
+        data-bootstro-content="Inferred structural models"
+        data-bootstro-step = "2"
+        data-bootstro-placement="left">
         <div class="page-header">
-            <h3 style="padding-left: 15px;">Correlations</h3>
+            <h3 style="padding-left: 15px;">Models</h3>
         </div>
+         <script src="{{ url_for('static', filename='js/ngl.js') }}"></script>
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        var stage = new NGL.Stage("viewport", {backgroundColor:'white'});
+        stage.loadFile("{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+        file=analysis_folder+'/output/ensemble.pdb') }}").then(function (o) {
+        o.addRepresentation("cartoon", {colorScheme: "modelindex"});
+        o.autoView();
+        });
+        });
+        </script>
+        <div id="viewport" style="width:600px; height:450px;"></div>
 
-        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1, file=analysis_folder+'/output/r_'+data_file+'.png') }}"/>
     </div>
 
     <!-- ===================================================================== -->
@@ -127,15 +136,83 @@
     <!-- ===================================================================== -->
 
     <div class="col-xs-12 col-sm-6 bootstro title"
-        data-bootstro-title=" P-values"
-        data-bootstro-content="This is a heatmap of the corrected p-values for the correlations."
-        data-bootstro-step = "2"
-        data-bootstro-placement="left">
+        data-bootstro-title=" Fit"
+        data-bootstro-content="Fit to experimental data"
+        data-bootstro-step = "1"
+        data-bootstro-placement="right"
+        style="border-right:1px solid #eaeaea;">
         <div class="page-header">
-            <h3 style="padding-left: 15px;">P-values</h3>
+            <h3 style="padding-left: 15px;">Fit to experimental data</h3>
         </div>
-        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1, file=analysis_folder+'/output/p_'+data_file+'.png') }}"/>
+
+        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+        file=analysis_folder+'/output/fit.png') }}"/>
     </div>
+</div>
+
+<div class="row">
+    <div class="page-header">
+            <h3 style="padding-left: 15px;">Population Weights</h3>
+    </div>
+     <table class="table table-striped bootstro"
+                data-bootstro-title="Results section"
+                data-bootstro-content="This section lists your uploaded studies.
+                                       <br><br><b>Weight</b>: inferred population weights.
+                                       <br><b>Error</b>: standard mean error.
+                                       <br><b>Distribution</b>: posterior distribution of parameters."
+                data-bootstro-step = "1"
+                data-bootstro-placement="bottom">
+            <thead >
+                <tr>
+                    <th class="col-md-8">Model</th>
+                    <th class="col-md-2 text-center">Weight (mean)</th>
+                    <th class="col-md-2 text-center">Standard error of mean</th>
+                    <th class="col-md-2 text-center">Standard deviation</th>
+                    <th class="col-md-2 text-center">Effective sample size</th>
+                    <th class="col-md-2 text-center">Scale reduction factor (Rhat)</th>
+                    <th class="col-md-2 text-center">Distribution</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for model in ensemble_models %}
+                <tr>
+                    <!-- -------------------- NAME ------------------------ -->
+                    <td><a href="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+                        file=analysis_folder+'/output/'+model.model_name)}}">{{ model.model_name }}
+                    </a>
+                    </td>
+                    <!-- -------------------- WEIGHTS ------------------------ -->
+                    <td class="text-center">
+                        {{ model.model_weight }}
+                    </td>
+                    <!-- -------------------- ERROR --------------------- -->
+                    <td class="text-center">
+                        {{ model.model_sem }}
+                    </td>
+                    <!-- -------------------- ERROR --------------------- -->
+                    <td class="text-center">
+                        {{ model.model_sd }}
+                    </td>
+                    <!-- -------------------- neff ------------------------ -->
+                    <td class="text-center">
+                        {{ model.model_neff }}
+                    </td>
+                    <!-- -------------------- Rhat --------------------- -->
+                    <td class="text-center">
+                        {{ model.model_rhat }}
+                    </td>
+                    <!-- -------------------- DISTRIBUTION ---------------------- -->
+                    <td class="text-center">
+                        <a href="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+                        file=analysis_folder+'/output/stan_weight_'+model.model_name+'.png') }}">
+                        <img src="{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
+                        file=analysis_folder+'/output/stan_weight_'+model.model_name+'.png') }}" width="100" height="60"/>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
 </div>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/bootstro.js') }}"></script>
@@ -152,3 +229,5 @@
     $( document ).ready(help);
 </script>
 {% endblock %}
+
+
