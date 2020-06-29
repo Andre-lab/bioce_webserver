@@ -212,19 +212,21 @@ def save_selected_pdbfiles(analysis_directory, output_directory, data_labels):
         dest_file = os.path.join(output_directory, fname)
         shutil.copyfile(src_file, dest_file)
 
-def run_complete(output_directory, analysis_directory, simulated_file, priors_file, experimental_file, output_name, names_file):
+def run_complete(output_directory, analysis_directory, simulated_file, priors_file, experimental_file,
+                 output_name, names_file, iterations):
     """
 
-    :param simulated:
-    :param priors:
-    :param experimental:
+    :param output_directory:
+    :param analysis_directory:
+    :param simulated_file:
+    :param priors_file:
+    :param experimental_file:
     :param output_name:
-    :param file_list:
-    :param weight_cut:
+    :param names_file:
+    :param iterations:
     :return:
     """
     njobs = 1
-    iterations = 2000
     chains = 1
 
     output_file = open(output_name,'w')
@@ -261,7 +263,7 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     plot_weights(output_directory, data_labels, fit)
     plot_fit(output_directory, crysol_chi2)
 
-def run_bioce_from_webserver(params):
+def run_bioce_from_webserver(params, weight_cut, iterations):
     experimental = os.path.join(params['study_folder'],params['dataset1'])
     pdb_files = os.path.join(params['study_folder'],params['dataset2'])
     #Standard file names
@@ -285,11 +287,7 @@ def run_bioce_from_webserver(params):
         job_done = False
         raise
 
-    #maximum_cut = 0.01
-    #winvert = 1.0/number_of_structures
-    #weight_cut = winvert if winvert < maximum_cut else maximum_cut
-    #TODO: This will come as parameter from simulatiom
-    weight_cut = 0.05
+    #TODO: Skip this step if simulated profiles are provided
     try:
         simulate_profiles(params['analysis_folder'], pdb_list, experimental)
     except:
@@ -308,7 +306,8 @@ def run_bioce_from_webserver(params):
 
     try:
         run_complete(params['output_folder'], params['analysis_folder'],
-                     vbi_simulated, vbi_priors, experimental, cbi_output, vbi_file_list)
+                     vbi_simulated, vbi_priors, experimental, cbi_output,
+                     vbi_file_list, iterations)
     except:
         print("Failed to perform Complete analysis")
         job_done = False

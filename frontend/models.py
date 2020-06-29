@@ -90,6 +90,7 @@ class Analyses(db.Model):
     analysis_name = db.Column(db.String(30))
     status = db.Column(db.Integer)
     weight_cut = db.Column(db.Float())
+    iterations = db.Column(db.Integer)
     timestamp_start = db.Column(db.DateTime)
     timestamp_finish = db.Column(db.DateTime)
 
