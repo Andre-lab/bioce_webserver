@@ -45,8 +45,6 @@ def simulate_profiles(directory, pdb_list, experimental_filename):
     :param experimental_filename:
     :return:
     """
-    generate_file_list(directory, pdb_list)
-    generate_weights(directory, pdb_list)
     intensities = process_pdbs_with_experimental(directory, pdb_list, experimental_filename)
     simulate_profiles = os.path.join(directory, "SimulatedIntensities.txt")
     np.savetxt(simulate_profiles, intensities)
@@ -268,7 +266,12 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
     pdb_files = os.path.join(params['study_folder'],params['dataset2'])
     #Standard file names
     file_list = os.path.join(params['analysis_folder'],'file_list.txt')
-    simulated = os.path.join(params['analysis_folder'],'SimulatedIntensities.txt')
+    simulated_custom_file = params['dataset3'] if 'dataset3' in params else None
+    if simulated_custom_file:
+        simulated = os.path.join(params['study_folder'], simulated_custom_file)
+    else:
+        simulated = os.path.join(params['analysis_folder'],'SimulatedIntensities.txt')
+
     priors = os.path.join(params['analysis_folder'],'weights.txt')
     #After running vbi
     vbi_simulated = os.path.join(params['analysis_folder'], 'vbi_SimulatedIntensities.txt')
@@ -288,8 +291,14 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
         raise
 
     #TODO: Skip this step if simulated profiles are provided
+
     try:
-        simulate_profiles(params['analysis_folder'], pdb_list, experimental)
+        generate_file_list(params['analysis_folder'], pdb_list)
+        generate_weights(params['analysis_folder'], pdb_list)
+        if simulated_custom_file is None:
+            simulate_profiles(params['analysis_folder'], pdb_list, experimental)
+        else:
+            print('Using custom simulated SAS profiles')
     except:
         print("Failed to simulate profiles")
         job_done = False
