@@ -1,7 +1,12 @@
 
 # Depoyment on murcof
 
-1. Now __clone the BioCE webserver repo__ and register the app with apache and make a few folders:
+1. Apache should be installed from webmin, one still needs to install mod_wsgi module:
+```
+sudo apt-get install libapache2-mod-wsgi
+```
+
+2. Now __clone the BioCE webserver repo__ and register the app with apache and make a few folders:
 ```
 git clone github.com/Andre-lab/bioce_webserver.git
 mkdir logs
@@ -9,15 +14,15 @@ mkdir failedAnalyses
 mkdir userData
 ```
 
-2. __Install all Python packages__ that we need for Science Flask:
+3. __Install all Python packages__ that we need for Science Flask:
 ```
 cd bioce_webserver
 conda env create -n bioce_web -f requirments.yml
 ```
 
-3. We want to serve our users through a __secure HTTPS connection__. This can be done from Webmin interface
+4. We want to serve our users through a __secure HTTPS connection__. This can be done from Webmin interface
 
-4. __Edit config file for Apache__:
+5. __Edit config file for Apache__:
  
  ```
  vi /etc/apache2/sites-enabled/bioce.andrelab.org.conf 
