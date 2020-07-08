@@ -26,28 +26,17 @@ conda env create -n bioce_web -f requirments.yml
  Copy and paste the following:
  
  ```
-<VirtualHost *:80>
-        ServerName public_IPv4_address_for_your_EC2
-        ServerAdmin admin@science_flask.com
-        DocumentRoot /var/www/html
-        Redirect permanent / https://public_IPv4_address_for_your_EC2
-</VirtualHost>
 
 <VirtualHost *:443>
-        ServerName bioce.andrelab.org
-        ServerAdmin bioce.webserver@gmail.com
-        DocumentRoot /var/www/html
-        WSGIDaemonProcess frontend user=ubuntu group=ubuntu processes=1 threads=1
-        WSGIScriptAlias / /var/www/html/science_flask/frontend/frontend.wsgi
 
-        <Directory /var/www/html/science_flask/frontend>
+        <Directory /home/bioce/public_html/frontend>
             WSGIProcessGroup frontend
             WSGIApplicationGroup %{GLOBAL}
             Order deny,allow
             Allow from all
         </Directory>
 
-        <Directory /var/www/html/science_flask>
+        <Directory /home/bioce/public_html>
             WSGIProcessGroup frontend
             WSGIApplicationGroup %{GLOBAL}
             Order deny,allow
@@ -55,29 +44,16 @@ conda env create -n bioce_web -f requirments.yml
         </Directory>
 
         # Static Directories
-        Alias /static /var/www/html/science_flask/frontend/static/
+        Alias /static /home/bioce/public_html/frontend/static/
         <Location "/static">
                 SetHandler None
         </Location>
 
-        # SSL Stuff
-        SSLEngine On
-        SSLCertificateFile      /etc/ssl/certs/apache-selfsigned.crt
-        SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
-        <Location />
-            SSLRequireSSL On
-            SSLVerifyClient optional
-            SSLVerifyDepth 1
-            SSLOptions +StdEnvVars +StrictRequire
-        </Location>
 </VirtualHost>
  ```
 Make sure you actually go through this file and make sure everything makes sense
 for __your__ app.
  
-__Note__: your `public_IPv4_address_for_your_EC2` should contain your elastic IP
- address.
-
 10. __Customize `frontend/config_example.py`__ and rename it to `frontend/config.py`
     1. Generate a secret key for your app like [this](https://pythonadventures.wordpress.com/2015/01/01/flask-generate-a-secret-key/)
     2. Setup the username, email, password for the admin. You can then log in with
