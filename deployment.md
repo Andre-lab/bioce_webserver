@@ -91,13 +91,13 @@ python db_create.py
  
  ```
 sudo apt-get install rabbitmq-server
-sudo rabbitmqctl add_user <username> <password>
-sudo rabbitmqctl set_permissions -p / <username> ".*" ".*" ".*"
+sudo rabbitmqctl add_user bioce *********
+sudo rabbitmqctl set_permissions -p / bioce ".*" ".*" ".*"
  ```
 Change `config.py` to 
 
 ```
-CELERY_BROKER_URL = 'amqp://<username>:<password>@public_IPv4_address_for_your_EC2:5672//'
+CELERY_BROKER_URL = 'amqp://bioce:*******@pbioce.andrelab.org:5672//'
 ```
 
 Start the service with:
