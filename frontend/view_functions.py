@@ -164,6 +164,7 @@ def save_analysis_to_db(form, study_id):
                                analysis_name=secure_filename(form.analysis_name.data),
                                status=1,
                                weight_cut=form.weight_cut.data,
+                               iterations=form.iterations.data,
                                timestamp_start=datetime.datetime.utcnow())
     db.session.add(analysis)
     db.session.commit()
@@ -236,8 +237,9 @@ def get_analyses_array():
         # collect all params for the analysis
         params = []
         params.append({'field':'Study name', 'value': study_name})
-        param_names = ['Weight Cut']
-        param_fields = ['weight_cut']
+        param_names = ['Weight Cut', 'Iterations']
+        param_fields = ['weight_cut', 'iterations']
+
         for i, p in enumerate(param_fields):
             field = getattr(analysis, p)
             if field is not None:

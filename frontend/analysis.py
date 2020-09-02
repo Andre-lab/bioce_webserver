@@ -38,7 +38,9 @@ def run_analysis(current_user_id):
 
         # load params file as a dict and define folders from it
         params = io_params.load_params(analysis_folder)
-        print('Params for analysis', params)
+        weight_cut = analysis.weight_cut
+        iterations = analysis.iterations
+        #print('Params for analysis', params, weight_cut)
         analysis_folder = params['analysis_folder']
         output_folder = params['output_folder']
         failed_folder = app.config['FAILED_FOLDER']
@@ -48,9 +50,7 @@ def run_analysis(current_user_id):
         # ----------------------------------------------------------------------
 
         try:
-            #TODO: provide access to functions here
-
-            job_done = run_bioce_pipeline.run_bioce_from_webserver(params)
+            job_done = run_bioce_pipeline.run_bioce_from_webserver(params, weight_cut, iterations)
             # if we exited gracefully, just let the user know
             if not job_done:
                 delete_analysis(analysis_id, analysis_folder, failed_folder)
@@ -129,6 +129,7 @@ def send_mail(email, first_name, analysis_name, subject=None, message=None):
     else:
         hi = 'Hi %s, \n\n' % first_name
     msg.body = (hi + message)
+    print("Message", message)
     mail.send(msg)
 
 
