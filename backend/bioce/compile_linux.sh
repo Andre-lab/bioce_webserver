@@ -1,7 +1,3 @@
-#!/bin/bash
-CONDA_DIR=$HOME/anaconda3/envs/bioce_web/
-
 swig -python -c++ -o vbw_sc_wrap.cpp vbw_sc.i
-g++ -O3 -fPIC -c VBW_sc.cpp -fpic -fopenmp -std=c++11 -I$CONDA_DIR/include
-g++ -O3 -fPIC -c vbw_sc_wrap.cpp -fpic -fopenmp -std=c++11 -I$CONDA_DIR/include/python3.7m -I$CONDA_DIR/include
-g++ -shared VBW_sc.o vbw_sc_wrap.o -L$CONDA_DIR/lib -fopenmp -lgsl -lgslcblas -lm -o _vbwSC.so
+g++ -c VBW_sc.cpp vbw_sc_wrap.cpp -shared -fpic -I/usr/include/python3.6 -fopenmp -O3 -lgsl -lgslcblas -lm -std=c++11
+g++ -shared VBW_sc.o vbw_sc_wrap.o -o _vbwSC.so -fopenmp -lgsl -lgslcblas -lm -std=c++11
