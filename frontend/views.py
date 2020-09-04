@@ -334,15 +334,16 @@ def vis(user_id, analysis_id, data_file):
     analysis_name = analysis.analysis_name
     study = models.Studies.query.get(analysis.study_id)
     study_name = study.study_name
-    username = app.config['USER_PREFIX'] + str(current_user.id)
-    analysis_folder = os.path.join(username, secure_filename(study_name),
-                                   secure_filename(analysis_name))
+    study_folder = secure_filename(analysis.study.study_name)
 
+    username = app.config['USER_PREFIX'] + str(current_user.id)
+    user_folder = get_user_folder()
+    analysis_folder = secure_filename(analysis_name)
 
     #TODO: Add live settings
     #INFERRED MODELS
 
-    cbi_output_file = os.path.join('userData',analysis_folder,'output','cbi_output.txt')
+    cbi_output_file = os.path.join(user_folder, study_folder, analysis_folder,'output','cbi_output.txt')
     models_names, models_weights, models_sem, models_sd, models_neff, models_rhat = get_models_names(cbi_output_file )
     # models_names = ['1.pdb', '2.pdb', '3.pdb']
     # models_weights = [0.31, 0.50, 0.19]
