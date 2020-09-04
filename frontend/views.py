@@ -346,7 +346,7 @@ def vis(user_id, analysis_id, data_file):
     cbi_output_file = os.path.join(user_folder, study_folder, analysis_folder,'output','cbi_output.txt')
     models_names, models_weights, models_sem, models_sd, models_neff, models_rhat = get_models_names(cbi_output_file )
 
-    vis_analysis_folder =  os.path.join(user_folder, study_folder, analysis_folder)
+    vis_analysis_folder =  os.path.join(username, study_folder, analysis_folder)
     ensemble_models = []
     for idx, mname in enumerate(models_names):
         emodel = models.Ensemble(mname, models_weights[idx], models_sem[idx], models_sd[idx], models_neff[idx], models_rhat[idx])
