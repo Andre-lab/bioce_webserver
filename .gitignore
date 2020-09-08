@@ -2,7 +2,6 @@
 .idea/
 *.db
 *.psd
-*txt
 *.ipynb
 frontend/config.py
 dump.rdb
