@@ -19,7 +19,12 @@
                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                     <div class="panel-body">
                         <p>
-                        Data files must have numeric values and contain 3 columns separated with the space
+                        Data files must have numeric values and contain 3 columns (q,I(q),err) separated with the space.
+                        <br>
+                            Example data file can be found
+                            <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/exp_test_10pts.dat">here</a>
+                            and
+                            <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/16_extrap_5concs-10p.dat">here</a>
                         <p>
 
                     </div>
@@ -40,8 +45,9 @@
                             Data file must be an archive in .zip or .tar format and contain valid PDB files of conformational
                             ensembles. PDB files can be generated with any program. For our studies we generated models
                             using all-atom Monte Carlo simulations as implemented in Rosetta.
-                        <br><br>
-                        Text, more text, and even more text.
+                            <br>
+                            Example PDB archive file (*.zip) can be found
+                            <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/pdbs.zip">here</a>
                         </p>
                     </div>
                 </div>
@@ -58,11 +64,12 @@
                 <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                     <div class="panel-body">
                         <p>
-                        Text, more text, and even more text.
-                        <br><br>
-                        Text, more text, and even more text.
-                        <br><br>
-                        Text, more text, and even more text.
+                        Intensity profiles can be either simulated "on-the-fly" with
+                            <a href="https://team.inria.fr/nano-d/software/pepsi-saxs/">Pepsi-SAXS</a> method
+                            or uploaded from your drive. If you want to use the latter option the file must have numeric
+                            values and contain n x m columns (n = number of q points, m = number of models) separated with the space.
+                            The 
+
                         </p>
                     </div>
                 </div>
