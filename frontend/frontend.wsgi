@@ -1,5 +1,10 @@
 import sys
-sys.path.insert(0, '/var/www/html/science_flask/')
-sys.path.insert(0, '/var/www/html/science_flask/frontend')
+import os
+import logging
+logging.basicConfig(stream=sys.stderr)
+
+sys.path.insert(0, '/home/bioce/public_html/bioce_webserver/')
+sys.path.insert(0, '/home/bioce/public_html/bioce_webserver/frontend')
+sys.path.append('/home/bioce/public_html/bioce_webserver/backend/bioce')
 
 from frontend import app as application

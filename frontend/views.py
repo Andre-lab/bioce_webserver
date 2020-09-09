@@ -334,24 +334,24 @@ def vis(user_id, analysis_id, data_file):
     analysis_name = analysis.analysis_name
     study = models.Studies.query.get(analysis.study_id)
     study_name = study.study_name
-    username = app.config['USER_PREFIX'] + str(current_user.id)
-    analysis_folder = os.path.join(username, secure_filename(study_name),
-                                   secure_filename(analysis_name))
+    study_folder = secure_filename(analysis.study.study_name)
 
+    username = app.config['USER_PREFIX'] + str(current_user.id)
+    user_folder = get_user_folder()
+    analysis_folder = secure_filename(analysis_name)
 
     #TODO: Add live settings
     #INFERRED MODELS
 
-    cbi_output_file = os.path.join('userData',analysis_folder,'output','cbi_output.txt')
+    cbi_output_file = os.path.join(user_folder, study_folder, analysis_folder,'output','cbi_output.txt')
     models_names, models_weights, models_sem, models_sd, models_neff, models_rhat = get_models_names(cbi_output_file )
-    # models_names = ['1.pdb', '2.pdb', '3.pdb']
-    # models_weights = [0.31, 0.50, 0.19]
-    # models_errors = [0.07, 0.1, 0.03]
+
+    vis_analysis_folder =  os.path.join(username, study_folder, analysis_folder)
     ensemble_models = []
     for idx, mname in enumerate(models_names):
         emodel = models.Ensemble(mname, models_weights[idx], models_sem[idx], models_sd[idx], models_neff[idx], models_rhat[idx])
         ensemble_models.append(emodel)
-    return render_template('vis.html', analysis_folder=analysis_folder,
+    return render_template('vis.html', analysis_folder=vis_analysis_folder,
                            analysis_name=analysis_name,
                            user_id=user_id, analysis_id=analysis_id,
                            data_file=data_file, ensemble_models = ensemble_models)
