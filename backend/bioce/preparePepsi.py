@@ -38,11 +38,17 @@ def process_pdbs_with_experimental(directory, pdb_list, experimental_file):
         intensity = data[:, 3]
         qvector = data[:, 0]
         log_file = open(pdb_filename+ ".log")
-        log_data = log_file.readlines()[62]
+        #TODO: Better solution should be found here
+        log_data = log_file.readlines()
+        log_data_line1 = log_data[62]
+        log_data_line2 = log_data[63]
         log_file.close()
-        if log_data[:7] != "Scaling":
-            break
-        scaling_factor = float(log_data.split(":")[1])
+        if log_data_line1[:7] == "Scaling":
+            scaling_factor = float(log_data.split(":")[1])
+        if log_data_line2[:7] == "Scaling":
+            scaling_factor = float(log_data.split(":")[1])
+        else:
+            raise Exception("Sorry cannot simulate scattering profiles")
         intensity /= scaling_factor
         if intensities is None:
             intensities = intensity
