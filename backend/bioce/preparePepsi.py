@@ -44,9 +44,9 @@ def process_pdbs_with_experimental(directory, pdb_list, experimental_file):
         log_data_line2 = log_data[63]
         log_file.close()
         if log_data_line1[:7] == "Scaling":
-            scaling_factor = float(log_data.split(":")[1])
+            scaling_factor = float(log_data_line1.split(":")[1])
         if log_data_line2[:7] == "Scaling":
-            scaling_factor = float(log_data.split(":")[1])
+            scaling_factor = float(log_data_line2.split(":")[1])
         else:
             raise Exception("Sorry cannot simulate scattering profiles")
         intensity /= scaling_factor
