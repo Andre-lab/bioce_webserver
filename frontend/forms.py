@@ -235,7 +235,7 @@ class UniqueAnalysisName(object):
 # ------------------------------------------------------------------------------
 
 number_ranges = {
-    'wcut': NumberRange(min=.001, max=0.5, message='Has to be between 0.001 and 0.5'),
+    'wcut': NumberRange(min=.0001, max=0.5, message='Has to be between 0.0001 and 0.5'),
     'iter': NumberRange(min=2000, max=4000, message='Has to be between 1000 and 4000')
 }
 
