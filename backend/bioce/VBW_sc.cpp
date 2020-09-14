@@ -815,7 +815,7 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
         ITERS_FIXED_T = 1000; /* how many iterations for each T? */
         STEP_SIZE = 1.0; /* max step size in random walk */
         K = 1.0; /* Boltzmann constant */
-        T_INITIAL = 1.0; /* initial temperature */
+        T_INITIAL = 100.0; /* initial temperature */
 		MU_T = 1.003; /* damping factor for temperature */
 		T_MIN = 2.0e-6;
         params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE, K, T_INITIAL, MU_T, T_MIN};
