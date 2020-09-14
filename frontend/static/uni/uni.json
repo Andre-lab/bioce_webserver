@@ -65996,5 +65996,26 @@
         "domain": "wwcc.wy.edu",
         "name": "Western Wyoming Community College",
         "web_page": "http://www.wwcc.wy.edu"
+  },
+  {
+      "alpha_two_code": "SE",
+      "country": "Sweden",
+      "domain": "ess.eu",
+      "name": "European Spallation Source ERIC",
+      "web_page": "http://europeanspallationsource.se/"
+  },
+  {
+      "alpha_two_code": "FR",
+      "country": "France",
+      "domain": "ill.eu",
+      "name": "Institut Laue-Langevin",
+      "web_page": "http://ill.eu"
+  },
+  {
+      "alpha_two_code": "FR",
+      "country": "France",
+      "domain": "esrf.eu",
+      "name": "European Synchrotron Radiation Facility",
+      "web_page": "http://www.esrf.se/"
   }
 ]
