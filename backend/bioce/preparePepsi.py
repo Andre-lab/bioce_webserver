@@ -24,7 +24,7 @@ def process_pdbs_with_experimental(directory, pdb_list, experimental_file):
     for pdb_file in pdb_list:
         pdb_filename = os.path.join(directory,pdb_file.strip("\n"))
         cmd_line = (
-            "Pepsi-SAXS --dp_min 0 --dp_max 0 --dp_N 1 --r0_min_factor 1 --r0_max_factor 1 --r0_N 1 "
+            "Pepsi-SAXS "
             + pdb_filename
             + " "
             + experimental_file
