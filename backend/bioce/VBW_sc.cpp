@@ -642,8 +642,8 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 		STEP_SIZE = 1;
 		K = 1.0;
 		T_INITIAL = 2.0; 
-		MU_T = 1.000025;
-       	T_MIN = 2.7776e-11;
+		MU_T = 1.005;
+       	        T_MIN = 2e-6;
 		params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE, K, T_INITIAL, MU_T, T_MIN};
 
 		//Define params before equilibration and after for next rounds
@@ -811,8 +811,8 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 		}
 		cout<<"STEP_SIZE set to: "<<STEP_SIZE<<std::endl;*/
 		///////////////////////////////////////////////////////////////////////////////////////////
-		N_TRIES = 200.0; /* how many points do we try before stepping */
-        ITERS_FIXED_T = 1000; /* how many iterations for each T? */
+		N_TRIES = 100.0; /* how many points do we try before stepping */
+        ITERS_FIXED_T = 10; /* how many iterations for each T? */
         STEP_SIZE = 1.0; /* max step size in random walk */
         K = 1.0; /* Boltzmann constant */
         T_INITIAL = 100.0; /* initial temperature */
