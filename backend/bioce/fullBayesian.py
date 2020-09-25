@@ -55,16 +55,17 @@ def execute_stan(directory, experimental, simulated, priors, iterations, chains,
 
     return fit
 
-def sim_energy(weights, experimental, simulated):
+def sim_energy(weights, scale, data):
     """Log likelihood energy function."""
 
-    intensities = experimental[:,1]
-    errors = experimental[:,2]
-
+    intensities = data['target_curve']
+    errors = data['target_errors']
+    simulated = data['sim_curves']
+    
     #Simulated * weight may need to be dot product
     #There is also constant involved
-    E = 0.5*np.sum((intensities - np.dot(simulated*weights)) ** 2) / (errors ** 2)
-    return E
+    Energy = 0.5*np.sum((intensities - scale*np.dot(simulated*weights)) ** 2) / (errors ** 2)
+    return Energy
 
 def calculate_model_evidence(experimental, simulated, priors):
     """
@@ -72,15 +73,17 @@ def calculate_model_evidence(experimental, simulated, priors):
     :return:
     """
     stanfile = 'saxs.stan'
-
+    number_of_structres = np.shape(simulated)[1]
+    number_of_measures =  np.shape(experimental)[0]
     stan_dat = {"sim_curves": simulated,
             "target_curve": experimental[:,1],
             "target_errors": experimental[:,2],
-            "n_measures" : np.shape(experimental)[0],
-            "n_structures" : np.shape(simulated)[1],
+            "n_measures" : number_of_measures,
+            "n_structures" : number_of_structres,
             "priors":priors}
 
-    obj1 = TIStan(sim_energy, 3, stan_file=stanfile)
+
+    obj1 = TIStan(sim_energy, number_of_structres + 1, stan_file=stanfile)
     mevidence = obj1.run(data=stan_dat, num_mcmc_iter=20, num_chains=32,
                     wmax_over_wmin=1.05, serial=False, smooth=False,
                     verbose=True)
