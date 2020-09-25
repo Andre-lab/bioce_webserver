@@ -66,12 +66,12 @@ def sim_energy(weights, experimental, simulated):
     E = 0.5*np.sum((intensities - np.dot(simulated*weights)) ** 2) / (errors ** 2)
     return E
 
-def calculate_model_evidence(directory, experimental, simulated, priors):
+def calculate_model_evidence(experimental, simulated, priors):
     """
     Calculates Model Evidence using TiStan package
     :return:
     """
-    stanfile = os.path.join(directory, 'saxs.stan')
+    stanfile = 'saxs.stan'
 
     stan_dat = {"sim_curves": simulated,
             "target_curve": experimental[:,1],
@@ -544,8 +544,6 @@ if __name__=="__main__":
             #print("ME log lik", me_log_lik(fit))
         print(fit)
 
-
-        calculate_model_evidence()
         #And soem stan utilitry stats
         stan_utility.check_treedepth(fit)
         stan_utility.check_energy(fit)

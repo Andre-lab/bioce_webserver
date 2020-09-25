@@ -244,7 +244,7 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2 = \
         cbi.calculate_stats(output_directory, fit, experimental, simulated)
 
-    model_evidence = cbi.calculate_model_evidence(output_directory, experimental, simulated, priors)
+    model_evidence = cbi.calculate_model_evidence(experimental, simulated, priors)
 
     #TODO: Write it to log somewhere
     data_labels = []
