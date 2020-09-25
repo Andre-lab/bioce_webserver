@@ -12,9 +12,9 @@ import optparse
 
 import numpy as np
 import pystan
+import TIStan
 import backend.bioce.psisloo as psisloo
 import backend.bioce.stan_utility as stan_utility
-
 
 from backend.bioce.statistics import calculateChiCrysol, calculateChemShiftsChi, JensenShannonDiv, waic
 from backend.bioce.stan_models import stan_code, stan_code_CS, stan_code_EP, stan_code_EP_CS, \
@@ -54,6 +54,37 @@ def execute_stan(directory, experimental, simulated, priors, iterations, chains,
                       n_jobs=njobs, sample_file=sample_filename)
 
     return fit
+
+def sim_energy(weights, experimental, simulated):
+    """Log likelihood energy function."""
+
+    intensities = experimental[:,1]
+    errors = experimental[:,2]
+
+    #Simulated * weight may need to be dot product
+    #There is also constant involved
+    E = 0.5*np.sum((intensities - np.dot(simulated*weights)) ** 2) / (errors ** 2)
+    return E
+
+def calculate_model_evidence(directory, experimental, simulated, priors):
+    """
+    Calculates Model Evidence using TiStan package
+    :return:
+    """
+    stanfile = os.path.join(directory, 'saxs.stan')
+
+    stan_dat = {"sim_curves": simulated,
+            "target_curve": experimental[:,1],
+            "target_errors": experimental[:,2],
+            "n_measures" : np.shape(experimental)[0],
+            "n_structures" : np.shape(simulated)[1],
+            "priors":priors}
+
+    obj1 = TIStan(sim_energy, 3, stan_file=stanfile)
+    mevidence = obj1.run(data=stan_dat, num_mcmc_iter=20, num_chains=32,
+                    wmax_over_wmin=1.05, serial=False, smooth=False,
+                    verbose=True)
+    return mevidence[0]
 
 
 def execute_stan_EP(experimental, simulated, priors, iterations, chains, njobs):
@@ -403,6 +434,9 @@ def combine_curve(output_directory, experimental, simulated, weights, scale):
     np.savetxt(os.path.join(output_directory,"cbi_output.txt.fit"),
                np.transpose((q_column, exp_intensities, combined, exp_errors)))
 
+
+
+
 if __name__=="__main__":
     doc = """
         Python interface to Complete Bayesian algorithm
@@ -510,6 +544,8 @@ if __name__=="__main__":
             #print("ME log lik", me_log_lik(fit))
         print(fit)
 
+
+        calculate_model_evidence()
         #And soem stan utilitry stats
         stan_utility.check_treedepth(fit)
         stan_utility.check_energy(fit)

@@ -244,6 +244,7 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2 = \
         cbi.calculate_stats(output_directory, fit, experimental, simulated)
 
+    model_evidence = cbi.calculate_model_evidence(output_directory, experimental, simulated, priors)
 
     #TODO: Write it to log somewhere
     data_labels = []
@@ -254,6 +255,7 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
         data_labels.append(fname)
     output_file.write("JSD : " + str(jsd) + '\n')
     output_file.write("Chi2 :" + str(crysol_chi2) + '\n')
+    output_file.write("ModelEvidence :" + str(model_evidence) + '\n')
     output_file.close()
 
     save_selected_pdbfiles(analysis_directory, output_directory, data_labels)
