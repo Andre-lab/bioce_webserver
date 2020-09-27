@@ -61,7 +61,7 @@ def sim_energy(weights, scale, data):
     intensities = data['target_curve']
     errors = data['target_errors']
     simulated = data['sim_curves']
-    
+
     #Simulated * weight may need to be dot product
     #There is also constant involved
     Energy = 0.5*np.sum((intensities - scale*np.dot(simulated*weights)) ** 2) / (errors ** 2)
