@@ -12,7 +12,7 @@ import optparse
 
 import numpy as np
 import pystan
-import TIStan
+from TIStan import TIStan
 import backend.bioce.psisloo as psisloo
 import backend.bioce.stan_utility as stan_utility
 
@@ -55,16 +55,19 @@ def execute_stan(directory, experimental, simulated, priors, iterations, chains,
 
     return fit
 
-def sim_energy(weights, scale, data):
+def sim_energy(parameters, data):
     """Log likelihood energy function."""
 
     intensities = data['target_curve']
     errors = data['target_errors']
     simulated = data['sim_curves']
+    n_structures = data['n_structures']
+    weights = parameters[0:n_structures]
+    scale = parameters[n_structures]
 
     #Simulated * weight may need to be dot product
     #There is also constant involved
-    Energy = 0.5*np.sum((intensities - scale*np.dot(simulated*weights)) ** 2) / (errors ** 2)
+    Energy = 0.5*np.sum(((intensities - scale*np.dot(simulated,weights)) ** 2) / (errors ** 2))
     return Energy
 
 def calculate_model_evidence(experimental, simulated, priors):
@@ -72,7 +75,7 @@ def calculate_model_evidence(experimental, simulated, priors):
     Calculates Model Evidence using TiStan package
     :return:
     """
-    stanfile = 'saxs.stan'
+    stanfile = os.path.join('backend','bioce','saxs.stan')
     number_of_structres = np.shape(simulated)[1]
     number_of_measures =  np.shape(experimental)[0]
     stan_dat = {"sim_curves": simulated,
@@ -82,11 +85,11 @@ def calculate_model_evidence(experimental, simulated, priors):
             "n_structures" : number_of_structres,
             "priors":priors}
 
-
+    #Parameters number of structures plus scale
     obj1 = TIStan(sim_energy, number_of_structres + 1, stan_file=stanfile)
     mevidence = obj1.run(data=stan_dat, num_mcmc_iter=20, num_chains=32,
                     wmax_over_wmin=1.05, serial=False, smooth=False,
-                    verbose=True)
+                    verbose=False)
     return mevidence[0]
 
 
@@ -480,11 +483,14 @@ if __name__=="__main__":
     parser.add_option("-c", "--chains", dest="chains",default = 4,
                       type = 'int',
                       help="Number of chains")
+    parser.add_option("-d", "--directory", dest="directory",default = None,
+                      help="Output directory [OBLIGATORY]")
     options, args = parser.parse_args()
 
     njobs = options.njobs
     iterations = options.iterations
     chains = options.chains
+    directory = options.directory
 
     #Files loading
     experimental = read_file_safe(options.experimental_file)
@@ -524,30 +530,32 @@ if __name__=="__main__":
                                       cs_simulated, cs_rms, cs_experimental,
                                       iterations, chains, njobs)
             else:
-                fit = execute_stan(experimental, simulated, priors,
+                fit = execute_stan(directory,experimental, simulated, priors,
                                    iterations, chains, njobs)
 
-        if options.cs_simulated_file:
-            bayesian_weights, jsd, crysol_chi2, chemshift_chi2 = \
-                calculate_stats(fit, experimental, simulated,
-                                cs_simulated, cs_rms, cs_experimental)
-            for index,fname in enumerate(file_names):
-                print(fname,bayesian_weights[index])
-            print("JSD: "+str(jsd))
-            print("Chi2 SAXS:"+str(crysol_chi2))
-            print("Chi2 CS:"+str(chemshift_chi2))
-        else:
-            bayesian_weights, jsd, crysol_chi2 = \
-                calculate_stats(fit, experimental, simulated)
-            for index,fname in enumerate(file_names):
-                print(fname,bayesian_weights[index])
-            print("JSD: "+str(jsd))
-            print("Chi2 SAXS:"+str(crysol_chi2))
-            #print("Mean weights", mean_for_weights(fit))
-            #print("ME log lik", me_log_lik(fit))
         print(fit)
-
-        #And soem stan utilitry stats
-        stan_utility.check_treedepth(fit)
-        stan_utility.check_energy(fit)
-        stan_utility.check_div(fit)
+        calculate_model_evidence(experimental, simulated, priors)
+        # if options.cs_simulated_file:
+        #     bayesian_weights, jsd, crysol_chi2, chemshift_chi2 = \
+        #         calculate_stats(fit, experimental, simulated,
+        #                         cs_simulated, cs_rms, cs_experimental)
+        #     for index,fname in enumerate(file_names):
+        #         print(fname,bayesian_weights[index])
+        #     print("JSD: "+str(jsd))
+        #     print("Chi2 SAXS:"+str(crysol_chi2))
+        #     print("Chi2 CS:"+str(chemshift_chi2))
+        # else:
+        #     bayesian_weights, jsd, crysol_chi2 = \
+        #         calculate_stats(directory, fit, experimental, simulated)
+        #     for index,fname in enumerate(file_names):
+        #         print(fname,bayesian_weights[index])
+        #     print("JSD: "+str(jsd))
+        #     print("Chi2 SAXS:"+str(crysol_chi2))
+        #     #print("Mean weights", mean_for_weights(fit))
+        #     #print("ME log lik", me_log_lik(fit))
+        # print(fit)
+        #
+        # #And soem stan utilitry stats
+        # stan_utility.check_treedepth(fit)
+        # stan_utility.check_energy(fit)
+        # stan_utility.check_div(fit)
