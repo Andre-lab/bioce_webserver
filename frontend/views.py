@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 from .analysis import run_analysis, terminate_analysis
 from .view_functions import save_study, get_form, save_analysis, \
                            get_studies_array, get_analyses_array, \
-                           get_user_folder, security_check, get_models_names
+                           get_user_folder, security_check, get_ensemble_values
 from backend.utils.check_uploaded_files import clear_up_study
 from . import app, db, models
 from .forms import UploadForm, AnalysisForm
@@ -344,7 +344,8 @@ def vis(user_id, analysis_id, data_file):
     #INFERRED MODELS
 
     cbi_output_file = os.path.join(user_folder, study_folder, analysis_folder,'output','cbi_output.txt')
-    models_names, models_weights, models_sem, models_sd, models_neff, models_rhat = get_models_names(cbi_output_file )
+    models_names, models_weights, models_sem, models_sd, models_neff, models_rhat, model_evidence, chi2, jsd = \
+        get_ensemble_values(cbi_output_file )
 
     vis_analysis_folder =  os.path.join(username, study_folder, analysis_folder)
     ensemble_models = []
@@ -354,7 +355,8 @@ def vis(user_id, analysis_id, data_file):
     return render_template('vis.html', analysis_folder=vis_analysis_folder,
                            analysis_name=analysis_name,
                            user_id=user_id, analysis_id=analysis_id,
-                           data_file=data_file, ensemble_models = ensemble_models)
+                           data_file=data_file, ensemble_models = ensemble_models,
+                           model_evidence = round(model_evidence,2), jsd = round(jsd,2), chi2 = round(chi2,2))
 
 # =============================================================================
 #
