@@ -87,8 +87,8 @@ def calculate_model_evidence(experimental, simulated, priors):
 
     #Parameters number of structures plus scale
     obj1 = TIStan(sim_energy, number_of_structres + 1, stan_file=stanfile)
-    mevidence = obj1.run(data=stan_dat, num_mcmc_iter=20, num_chains=32,
-                    wmax_over_wmin=1.05, serial=False, smooth=False,
+    mevidence = obj1.run(data=stan_dat, num_mcmc_iter=20, num_chains=1,
+                    wmax_over_wmin=1.05, num_workers=2, serial=True, smooth=False,
                     verbose=False)
     return mevidence[0]
 
