@@ -299,7 +299,7 @@ def get_study_folder(study_id):
 # RESULTS - RENDERING MODELS
 # -----------------------------------------------------------------------------
 
-def get_models_names(cbi_output_file):
+def get_ensemble_values(cbi_output_file):
     """
     Returns a path to the current user's study
     """
@@ -310,7 +310,8 @@ def get_models_names(cbi_output_file):
     model_sd = []
     model_neff = []
     model_rhat = []
-    for line in cbi_out.readlines():
+    lines = cbi_out.readlines()
+    for line in lines:
         result_row = line.split(':')
         pdb_name = result_row[0]
         if pdb_name[-3:] == 'pdb':
@@ -322,4 +323,8 @@ def get_models_names(cbi_output_file):
         model_sd.append(round(float(result_row[3]), 2))
         model_neff.append(round(float(result_row[4]),1))
         model_rhat.append(round(float(result_row[5]),1))
-    return model_names, model_weights, model_sem, model_sd, model_neff, model_rhat
+    model_evidence = float(line[-1].split(":")[1])
+    chi2 = float(line[-2].split(":")[1])
+    jsd = float(line[-3].split(":")[1])
+
+    return model_names, model_weights, model_sem, model_sd, model_neff, model_rhat, model_evidence, chi2, jsd
