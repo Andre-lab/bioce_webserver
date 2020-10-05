@@ -254,8 +254,8 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
                           + ':' + str(bayesian_rhat[index]) + '\n')
         data_labels.append(fname)
     output_file.write("JSD : " + str(jsd) + '\n')
-    output_file.write("Chi2 :" + str(crysol_chi2) + '\n')
-    output_file.write("ModelEvidence :" + str(model_evidence) + '\n')
+    output_file.write("Chi2 : " + str(crysol_chi2) + '\n')
+    output_file.write("Model Evidence : " + str(model_evidence) + '\n')
     output_file.close()
 
     save_selected_pdbfiles(analysis_directory, output_directory, data_labels)

@@ -90,6 +90,7 @@ def calculate_model_evidence(experimental, simulated, priors):
     mevidence = obj1.run(data=stan_dat, num_mcmc_iter=20, num_chains=1,
                     wmax_over_wmin=1.05, num_workers=2, serial=True, smooth=False,
                     verbose=False)
+    print("Model evidence (internal)", mevidence)
     return mevidence[0]
 
 
