@@ -121,7 +121,7 @@ def send_mail(email, first_name, analysis_name, subject=None, message=None):
         subject = ('Your %s job finished' % app_name)
         message = ('Your analysis (named: %s) has finished running. '
                   'You can check the results in your profile under the Analyses'
-                  ' tab. \n%s Team' % (analysis_name, app_name))
+                  ' tab: https://bioce.andrelab.org/profile. \n%s Team' % (analysis_name, app_name))
 
     msg = Message(subject, recipients=[email])
     if first_name is None:
