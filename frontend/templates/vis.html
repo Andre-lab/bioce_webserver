@@ -219,9 +219,48 @@
     <div class="page-header">
             <h3 style="padding-left: 15px;">Additional metrics</h3>
     </div>
-    <p>Model evidence: {{ model_evidence }} </p>
-    <p>chi2: {{ chi2 }} </p>
-    <p>JSD: {{ jsd }} </p>
+    <table class="table table-striped bootstro"
+                data-bootstro-title="Additional metrics"
+                data-bootstro-content=" <br><br><b>Model Evidence</b>: model complexity/fit to data.
+                                       <br><b>JSD</b>: Jensen-Shannon Divergence.
+                                       <br><b>Chi2</b>: Chi^2 between ensmble curve and experimental data."
+                data-bootstro-step = "1"
+                data-bootstro-placement="bottom">
+        <thead >
+                <tr>
+                    <th class="col-md-8">Metric</th>
+                    <th class="col-md-2 text-center">Value</th>
+                </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">
+                 Model Evidence:
+                </td>
+                <td class="text-center">
+                 {{ model_evidence }}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">
+                 JSD:
+                </td>
+                <td class="text-center">
+                 {{ jsd }}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">
+                 &Chi<sup>2</sup>:
+                </td>
+                <td class="text-center">
+                 {{ chi2 }}
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='js/bootstro.js') }}"></script>
 <script type="text/javascript">
