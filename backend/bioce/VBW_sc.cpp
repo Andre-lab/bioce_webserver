@@ -812,7 +812,7 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 		cout<<"STEP_SIZE set to: "<<STEP_SIZE<<std::endl;*/
 		///////////////////////////////////////////////////////////////////////////////////////////
 		N_TRIES = 100.0; /* how many points do we try before stepping */
-        ITERS_FIXED_T = 10; /* how many iterations for each T? */
+        ITERS_FIXED_T = 20; /* how many iterations for each T? */
         STEP_SIZE = 1.0; /* max step size in random walk */
         K = 1.0; /* Boltzmann constant */
         T_INITIAL = 100.0; /* initial temperature */
