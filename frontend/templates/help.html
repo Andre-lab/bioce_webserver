@@ -79,15 +79,15 @@
                 </div>
             </div>
 
-                        <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingTwo">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
                     <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
                             Jensen-Shannon divergence (output)
                         </a>
                     </h4>
                 </div>
-                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                     <div class="panel-body">
                         <p>
                             Jensen-Shannon is a useful metric to measure the uncertainty of ensembles developed by (Fisher et al).
@@ -99,6 +99,30 @@
                             <img style="width: 100%; height: auto; padding-bottom: 30px;" src="{{ url_for('static', filename='img/jsd2.png') }}"
                                   alt="{{ config['APP_NAME'] }}" title="{{ config['APP_NAME'] }}">
                             and ranges between 0 and 1 for two maximally identical and different vectors.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFive">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
+                            Model Evidence (output)
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                    <div class="panel-body">
+                        <p>
+                            Model evidence or marginal likelihood is widely used in Bayesian model comparison
+                            and provides an automatic Occam’s razor effect by balancing between fit to data
+                            and model complexity, thereby providing a rigorous approach to combat overfitting.
+                            However, ,odel evidence is a multidimensional integral that can be very difficult to evaluate.
+                            We use <a href="https://pypi.org/project/TIStan/">TIStan</a> package that implements
+                            adaptively-annealed thermodynamic integration for model evidence estimation.
+                            This package makes use of PyStan's implementation of the No U-Turn Sampler for refreshing
+                            the sample population at each inverse temperature increment.
                         </p>
                     </div>
                 </div>
