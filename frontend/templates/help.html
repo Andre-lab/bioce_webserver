@@ -12,7 +12,7 @@
                 <div class="panel-heading" role="tab" id="headingOne">
                     <h4 class="panel-title">
                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Experimental data
+                            Experimental data file (input)
                         </a>
                     </h4>
                 </div>
@@ -20,9 +20,7 @@
                     <div class="panel-body">
                         <p>
                         Data files must have numeric values and contain 3 columns (q,I(q),err) separated with one or more spaces.
-                        No headers or footters are allowed.<br>
-                            <img style="width: 100%; height: auto; padding-bottom: 30px;" src="{{ url_for('static', filename='img/data_file.png') }}" alt="{{ config['APP_NAME'] }}" title="{{ config['APP_NAME'] }}"
-                            width="326" height="240">
+                        No headers or footters are allowed. The file must have txt or dat extension<br>
                         <br><br>
                             Example data file can be found
                             <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/exp_test_10pts.dat">here</a>
@@ -38,7 +36,7 @@
                 <div class="panel-heading" role="tab" id="headingTwo">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            PDB files
+                            PDB files (input)
                         </a>
                     </h4>
                 </div>
@@ -60,7 +58,7 @@
                 <div class="panel-heading" role="tab" id="headingThree">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
-                            Simulated profiles
+                            Simulated profiles (input)
                         </a>
                     </h4>
                 </div>
@@ -80,6 +78,32 @@
                     </div>
                 </div>
             </div>
+
+                        <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Jensen-Shannon divergence (output)
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        <p>
+                            Jensen-Shannon is a useful metric to measure the uncertainty of ensembles developed by (Fisher et al).
+                            The expectation value of the Jensen-Shannon divergence relative to the optimal weights over
+                            the posterior distribution can be defined as:<br>
+                             <img style="width: 100%; height: auto; padding-bottom: 30px;" src="{{ url_for('static', filename='img/jsd1.png') }}"
+                                  alt="{{ config['APP_NAME'] }}" title="{{ config['APP_NAME'] }}"><br>
+                            where:
+                            <img style="width: 100%; height: auto; padding-bottom: 30px;" src="{{ url_for('static', filename='img/jsd2.png') }}"
+                                  alt="{{ config['APP_NAME'] }}" title="{{ config['APP_NAME'] }}">
+                            and ranges between 0 and 1 for two maximally identical and different vectors.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
