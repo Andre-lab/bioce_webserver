@@ -77,10 +77,9 @@ def add_errors_m(intensities, qvector):
 
 
 def generate_file_list(directory, pdb_list):
-    files = read_file_safe(pdb_list, 0, "unicode")
     flist_file = os.path.join(directory,'file_list.txt')
     f = open(flist_file, "w")
-    line_to_write = " ".join(files)
+    line_to_write = " ".join(pdb_list)
     f.writelines(line_to_write)
     f.close()
 
@@ -88,8 +87,7 @@ def generate_file_list(directory, pdb_list):
 def generate_weights(directory, pdb_list):
     wfile = os.path.join(directory,'weights.txt')
     out = open(wfile, "w")
-    files = read_file_safe(pdb_list, 0, "unicode")
-    len_models = len(files)
+    len_models = len(pdb_list)
     fwght = 1.0 / (len_models)
     for i in range(len_models):
         out.write(str(fwght) + " ")
