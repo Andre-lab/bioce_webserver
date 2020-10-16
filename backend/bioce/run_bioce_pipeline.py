@@ -288,7 +288,7 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
                 if zip_info.filename.startswith('__MACOSX/') or zip_info.filename[-1] == '/':
                     continue
                 zip_info.filename = os.path.basename(zip_info.filename)
-                zipObj.extract(zip_info)
+                zipObj.extract(zip_info, params['analysis_folder'])
                 pdb_list = zipObj.namelist()
     except:
         print("Failed to extact zipfile")
