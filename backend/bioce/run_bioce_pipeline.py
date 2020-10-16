@@ -282,9 +282,9 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
     vbi_output = os.path.join(params['output_folder'], 'vbi_output.txt')
     cbi_output = os.path.join(params['output_folder'], 'cbi_output.txt')
     job_done = True
+    pdb_list = []
     try:
         with zipfile.ZipFile(pdb_files, 'r') as zipObj:
-            pdb_list = []
             for zip_info in zipObj.infolist():
                 if zip_info.filename.startswith('__MACOSX/') or zip_info.filename[-1] == '/':
                     continue
