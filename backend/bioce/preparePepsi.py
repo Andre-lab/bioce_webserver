@@ -22,6 +22,9 @@ def process_pdbs_with_experimental(directory, pdb_list, experimental_file):
     intensities = None
     #experimental_file = os.path.join(directory, experimental_file)
     for pdb_file in pdb_list:
+        #Skipping non-PDB files - may not be best solution though
+        if pdb_list[-3:] != 'pdb':
+            continue
         pdb_filename = os.path.join(directory,pdb_file.strip("\n"))
         cmd_line = (
             "Pepsi-SAXS "
