@@ -12,19 +12,20 @@
                 <div class="panel-heading" role="tab" id="headingOne">
                     <h4 class="panel-title">
                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Experimental data
+                            Experimental data file (input)
                         </a>
                     </h4>
                 </div>
                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                     <div class="panel-body">
                         <p>
-                        Data files must have numeric values and contain 3 columns (q,I(q),err) separated with the space.
+                        Data files must have numeric values and contain 3 columns (q,I(q),err) separated with one or more spaces.
+                        No headers or footters are allowed. The file must have txt or dat extension
                         <br><br>
                             Example data file can be found
                             <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/exp_test_10pts.dat">here</a>
                             and
-                            <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/16_extrap_5concs-10p.dat">here</a>
+                            <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/SASDCQ2.dat">here</a>
                         <p>
 
                     </div>
@@ -35,7 +36,7 @@
                 <div class="panel-heading" role="tab" id="headingTwo">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            PDB files
+                            PDB files (input)
                         </a>
                     </h4>
                 </div>
@@ -57,7 +58,7 @@
                 <div class="panel-heading" role="tab" id="headingThree">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
-                            Simulated profiles
+                            Simulated profiles (input)
                         </a>
                     </h4>
                 </div>
@@ -77,6 +78,61 @@
                     </div>
                 </div>
             </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+                            Jensen-Shannon divergence (output)
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <div class="panel-body">
+                        <p>
+                            Jensen-Shannon is a useful metric to measure the uncertainty of ensembles developed by (Fisher et al*).
+                            The expectation value of the Jensen-Shannon divergence relative to the optimal weights over
+                            the posterior distribution can be defined as:
+                             <img style="width: 225; height: 22;" src="{{ url_for('static', filename='img/jsd1.png') }}"
+                                  alt="{{ config['APP_NAME'] }}" title="{{ config['APP_NAME'] }}">
+                            where:
+                            <img style="width: 429; height: 29;" src="{{ url_for('static', filename='img/jsd2.png') }}"
+                                  alt="{{ config['APP_NAME'] }}" title="{{ config['APP_NAME'] }}">
+                            and ranges between 0 and 1 for two maximally identical and different vectors.
+
+			    <br><br>*Fisher CK, Ullman O, Stultz CM. Pacific Symposium on Biocomputing Pacific Symposium on Biocomputing. 2012:82–93. Epub 2011/12/17. pmid:22174265 	
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFive">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
+                            Model Evidence (output)
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                    <div class="panel-body">
+                        <p>
+                            Model evidence or marginal likelihood is widely used in Bayesian model comparison
+                            and provides an automatic Occam’s razor effect by balancing between fit to data
+                            and model complexity, thereby providing a rigorous approach to combat overfitting.
+                            However, ,odel evidence is a multidimensional integral that can be very difficult to evaluate.
+                            We use <a href="https://pypi.org/project/TIStan/">TIStan</a>* package that implements
+                            adaptively-annealed thermodynamic integration for model evidence estimation.
+                            This package makes use of PyStan's implementation of the No U-Turn Sampler for refreshing
+                            the sample population at each inverse temperature increment.
+
+			    <br><br>
+			    *Henderson, R.W.; Goggans, P.M. TI-Stan: Model Comparison Using Thermodynamic Integration and HMC. Entropy 2019, 21, 1161.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 

@@ -68,13 +68,6 @@ def check_files(user_data_folder, files_dict, form):
             clear_up_study(study_folder)
             return False, format_errors
 
-        # impute missing values with median
-        df_numeric = df_numeric.fillna(df_numeric.median())
-
-        # save imputed, all-numeric dataset
-        df_numeric.to_csv(dataset_path, sep=sep, header=False, index=False)
-
-
     # everything went fine, every file is checked
     return True, format_errors
 
@@ -91,7 +84,6 @@ def clear_up_study(study_folder):
     if os.path.exists(folder_to_delete):
         shutil.rmtree(folder_to_delete)
 
-#TODO: here comes the problem
 def open_file(file_path, **kwargs):
     """
     Opens files based on their file extension in pandas
@@ -99,7 +91,6 @@ def open_file(file_path, **kwargs):
     filename, extension = os.path.splitext(file_path)
     #There is additional check in the code
     if extension == '.txt' or  extension == '.dat':
-        sep = ' '
-        #READ .txt, dat, zip and tar file
+        sep = '\s+'
     file = pd.read_csv(file_path, sep=sep, index_col=None, header=None, **kwargs)
     return file, sep
