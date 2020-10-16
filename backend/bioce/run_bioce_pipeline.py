@@ -284,9 +284,12 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
     job_done = True
     try:
         with zipfile.ZipFile(pdb_files, 'r') as zipObj:
-            zipObj.extractall(params['analysis_folder'])
-            pdb_list = zipObj.namelist()
-        #number_of_structures = len(pdb_list)
+            for zip_info in zipObj.infolist():
+                if zip_info.filename.startswith('__MACOSX/') or zip_info.filename[-1] == '/':
+                    continue
+                zip_info.filename = os.path.basename(zip_info.filename)
+                zipObj.extract(zip_info)
+                pdb_list = zipObj.namelist()
     except:
         print("Failed to extact zipfile")
         job_done = False
