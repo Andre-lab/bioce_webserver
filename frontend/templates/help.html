@@ -23,9 +23,9 @@
                         No headers or footters are allowed. The file must have txt or dat extension
                         <br><br>
                             Example data file can be found
-                            <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/exp_test_10pts.dat">here</a>
+			    <a href="{{ url_for('static', filename='test_data/exp_test_10pts.dat')}}" ><i class="fa fa-download" aria-hidden="true"></i>here</a>
                             and
-                            <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/SASDCQ2.dat">here</a>
+			    <a href="{{ url_for('static', filename='test_data/SASDCQ2.dat')}}" ><i class="fa fa-download" aria-hidden="true"></i>here</a>
                         <p>
 
                     </div>
@@ -48,7 +48,7 @@
                             using all-atom Monte Carlo simulations as implemented in Rosetta.
                             <br><br>
                             Example PDB archive file (*.zip) can be found
-                            <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/pdbs.zip">here</a>
+			    <a href="{{ url_for('static', filename='test_data/pdbs.zip')}}" ><i class="fa fa-download" aria-hidden="true"></i>here</a>
                         </p>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                             must be the same in both files (experimental and simulated profiles).
                             <br><br>
                             Example of simulated profiles for 10 q points and 5 structural models can be found
-                            <a href="https://github.com/Andre-lab/bioce_webserver/blob/master/backend/bioce/data/SimulatedIntensities.txt">here</a>
+			     <a href="{{ url_for('static', filename='test_data/SimulatedIntensities.txt')}}" ><i class="fa fa-download" aria-hidden="true"></i>here</a>
                         </p>
                     </div>
                 </div>
