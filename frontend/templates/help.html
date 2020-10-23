@@ -32,20 +32,20 @@
                         </p>
 
 
-                        <p> Defining input and running analysis:
+                        <p> Defining input and running analysis:<br>
                             <ul>
-                            <il><a href="{{ url_for('upload')}}" >Upload</a> SAXS data and pdb files (login required).</il>
-                            <il>CLick on button <i class="fa fa-bar-chart" style="padding-left: .5em"></i> and input analysis name.</il>
-                            <il><i>Weight cutoff </i> controls number of models discarded after each iterations (keep the default value)
-                                and may influence final number of models selected for ensemble. </il>
-                            <il> <i>Number of iterations</i> controls STAN simulations and 2000 is usually good number (keep the default value)</il>
-                            <il>CLick on Analyze button. This will start analysis and you will receive email when it is finished</il>
-                            <il>You will see if job is running on your profile page (under Analyses). </il>
-                            <il>Once job's finished you can inspect results by clicking on <i class="fa fa-eye" style="padding-left: .5em"></i> </il>
+                            <li><a href="{{ url_for('upload')}}" >Upload</a> SAXS data and pdb files (login required).</li>
+                            <li>CLick on button <i class="fa fa-bar-chart" style="padding-left: .5em"></i> and input analysis name.</li>
+                            <li><i>Weight cutoff </i> controls number of models discarded after each iterations (keep the default value)
+                                and may influence final number of models selected for ensemble. </li>
+                            <li> <i>Number of iterations</i> controls STAN simulations and 2000 is usually good number (keep the default value)</>
+                            <li>CLick on Analyze button. This will start analysis and you will receive email when it is finished</li>
+                            <li>You will see if job is running on your profile page (under Analyses). </li>
+                            <li>Once job's finished you can inspect results by clicking on <i class="fa fa-eye" style="padding-left: .5em"></i> </li>
                             </ul>
                         </p>
 
-                        <p> Results:
+                        <p> Results:<br>
                             The process is stochastic, so results may change a bit from run to run.
                             Nevertheless in this case, we expect three structures to be selected and overall good fit
                             to the data (&#967;<sup>2</sup>) ~ 0.78, Jensen-Shanon divergence ~ 0.05 and Model Evidence of approx. -800.
