@@ -50,17 +50,23 @@ def calculateChemShiftsChi(weightedIns, expIns, expErr, teoErr):
         return chi2_/Sindex
 
 
-def InfEntropy(weight):
-    S = 0.0
-    for wi in weight:
-        if wi<0.0000001:
-                wi = 0.0000001
-        S-=wi*np.log2(wi)
-    return S
+# def InfEntropy(weight):
+#     S = 0.0
+#     for wi in weight:
+#         if wi<0.0000001:
+#                 wi = 0.0000001
+#         S-=wi*np.log2(wi)
+#     return S
+#
+# def JensenShannonDiv(weights_a, weights_b):
+#     jsd = InfEntropy((weights_a+weights_b)*0.5)-0.5*InfEntropy(weights_a)-0.5*InfEntropy(weights_b)
+#     return jsd
 
 def JensenShannonDiv(weights_a, weights_b):
-    jsd = InfEntropy((weights_a+weights_b)*0.5)-0.5*InfEntropy(weights_a)-0.5*InfEntropy(weights_b)
-    return jsd
+    ientropy1 = np.sum(weights_a * (np.log2(2 * weights_a) - np.log2(weights_a + weights_b)))
+    ientropy2 = np.sum(weights_b * (np.log2(2 * weights_b) - np.log2(weights_a + weights_b)))
+    sigma = 0.5 * (ientropy1 + ientropy2)
+    return sigma
 
 def mean_for_weights(fit):
     """

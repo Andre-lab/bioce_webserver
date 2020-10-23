@@ -282,11 +282,15 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
     vbi_output = os.path.join(params['output_folder'], 'vbi_output.txt')
     cbi_output = os.path.join(params['output_folder'], 'cbi_output.txt')
     job_done = True
+    pdb_list = []
     try:
         with zipfile.ZipFile(pdb_files, 'r') as zipObj:
-            zipObj.extractall(params['analysis_folder'])
-            pdb_list = zipObj.namelist()
-        #number_of_structures = len(pdb_list)
+            for zip_info in zipObj.infolist():
+                if zip_info.filename.startswith('__MACOSX/') or zip_info.filename[-1] == '/':
+                    continue
+                zip_info.filename = os.path.basename(zip_info.filename)
+                zipObj.extract(zip_info, params['analysis_folder'])
+                pdb_list.append(zip_info.filename)
     except:
         print("Failed to extact zipfile")
         job_done = False
@@ -336,9 +340,15 @@ def run_bioce(params):
     #We need to intrdduce some heuristic here
 
     job_done = True
+
     with zipfile.ZipFile(pdb_files, 'r') as zipObj:
-        zipObj.extractall()
-        pdb_list = zipObj.namelist()
+        for zip_info in zipObj.infolist():
+            if zip_info.filename.startswith('__MACOSX/') or zip_info.filename[-1] == '/':
+                continue
+            zip_info.filename = os.path.basename(zip_info.filename)
+            zipObj.extract(zip_info)
+            pdb_list = zipObj.namelist()
+
     number_of_structures = len(pdb_list)
     maximum_cut = 0.01
     winvert = 1.0/number_of_structures
