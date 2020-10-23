@@ -1,8 +1,10 @@
+.DS_Store
 *.pyc
 .idea/
 *.db
 *.psd
 *.ipynb
+model.pkl
 frontend/config.py
 dump.rdb
 db_create.py
@@ -14,3 +16,9 @@ failedAnalyses/
 article/
 website/
 frontend/config.py
+backend/bioce/VBW_sc.o
+backend/bioce/_vbwSC.so
+backend/bioce/vbw_sc_wrap.cpp
+backend/bioce/vbw_sc_wrap.o
+restart.dat
+saved_samples.txt
