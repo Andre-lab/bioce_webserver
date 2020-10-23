@@ -8,6 +8,63 @@
         
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingZero">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseZero" aria-expanded="true" aria-controls="collapseZero">
+                            Tutorial (calmodulin)
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseZero" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingZero">
+                    <div class="panel-body">
+
+                        <p>Calmodulin (CaM) is a two-domain protein system connected by the flexible linker.
+                            We will analyze  <a href="{{ url_for('static', filename='test_data/SASDCQ2.dat')}}" >
+                            <i class="fa fa-download" aria-hidden="true"></i>SAXS data set</a> of CaM
+                            obtained using in-line SEC (size exclusion chromatography) at the Australian Synchrotron*
+                            Library of structurally and energetically reasonable <a href="{{ url_for('static', filename='test_data/CaM_models.zip')}}" >
+                            <i class="fa fa-download" aria-hidden="true"></i>conformers of CaM</a> was generated using
+                            <a href="https://www.rosettacommons.org/">Rosetta macromolecular modeling package</a>
+                            where torsion angles in the linker segment were sampled in a Monte Carlo simulation followed
+                            by an all atom energy refinement of the linker segment (residues 77-81).
+                        </p>
+
+
+                        <p> Defining input and running analysis:
+                            <ul>
+                            <il><a href="{{ url_for('upload')}}" >Upload</a> SAXS data and pdb files (login required).</il>
+                            <il>CLick on button <i class="fa fa-bar-chart" style="padding-left: .5em"></i> and input analysis name.</il>
+                            <il><i>Weight cutoff </i> controls number of models discarded after each iterations (keep the default value)
+                                and may influence final number of models selected for ensemble. </il>
+                            <il> <i>Number of iterations</i> controls STAN simulations and 2000 is usually good number (keep the default value)</il>
+                            <il>CLick on Analyze button. This will start analysis and you will receive email when it is finished</il>
+                            <il>You will see if job is running on your profile page (under Analyses). </il>
+                            <il>Once job's finished you can inspect results by clicking on <i class="fa fa-eye" style="padding-left: .5em"></i> </il>
+                            </ul>
+                        </p>
+
+                        <p> Results:
+                            The process is stochastic, so results may change a bit from run to run.
+                            Nevertheless in this case, we expect three structures to be selected and overall good fit
+                            to the data (&#967;<sup>2</sup>), Jensen-Shanon divergence ~0.05 and Model Evidence of approx. -800.
+
+
+                        </p>
+
+                        <p>
+                        *Trewhella J, Duff AP, Durand D, Gabel F, Guss JM, Hendrickson WA, et al.
+                        2017 publication guidelines for structural modelling of small-angle scattering data from
+                        biomolecules in solution: an update. Acta crystallographica Section D, Structural biology.
+                        2017;73(Pt 9):710–28. Epub 2017/09/07. pmid:28876235.
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+
+
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingOne">
                     <h4 class="panel-title">
