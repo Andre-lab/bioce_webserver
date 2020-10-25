@@ -20,7 +20,7 @@
                     <div class="panel-body">
                         <p>
                         Data files must have numeric values and contain 3 columns (q,I(q),err) separated with one or more spaces.
-                        No headers or footters are allowed. The file must have txt or dat extension
+                        No headers or footers are allowed. The file must have txt or dat extension
                         <br><br>
                             Example data file can be found
 			    <a href="{{ url_for('static', filename='test_data/exp_test_10pts.dat')}}" ><i class="fa fa-download" aria-hidden="true"></i>here</a>
@@ -157,10 +157,10 @@
                         </p>
 
 
-                        <p> Defining input and running analysis:<br>
+                        <p> <b>Defining input and running analysis:</b><br>
                             <ul>
                             <li><a href="{{ url_for('upload')}}" >Upload</a> SAXS data and pdb files (login required).</li>
-                            <li>CLick on button <i class="fa fa-bar-chart" style="padding-left: .5em"></i> and input analysis name.</li>
+                            <li>Click on button <i class="fa fa-bar-chart" style="padding-left: .5em"></i> and input analysis name.</li>
                             <li><i>Weight cutoff </i> controls number of models discarded after each iterations (keep the default value)
                                 and may influence final number of models selected for ensemble. </li>
                             <li> <i>Number of iterations</i> controls STAN simulations and 2000 is usually good number (keep the default value)</>
@@ -170,7 +170,7 @@
                             </ul>
                         </p>
 
-                        <p> Results:<br>
+                        <p> <b>Results:</b><br>
                             The process is stochastic, so results may change a bit from run to run.
                             Nevertheless in this case, we expect three structures to be selected and overall good fit
                             to the data (&#967;<sup>2</sup>) ~ 0.78, Jensen-Shanon divergence ~ 0.05 and Model Evidence of approx. -800.
