@@ -97,8 +97,10 @@ def generate_weights(directory, pdb_list):
 if __name__ == "__main__":
     pdb_list_name = sys.argv[1]
     pdb_list = open(pdb_list_name).readlines()
+    pdb_list = [pdb.strip() for pdb in pdb_list]
+    output_directory = './'
     experimental_file = sys.argv[2]
-    generate_file_list(pdb_list)
-    generate_weights(pdb_list)
-    intensities = process_pdbs_with_experimental(pdb_list, experimental_file)
+    generate_file_list(output_directory, pdb_list)
+    generate_weights(output_directory, pdb_list)
+    intensities = process_pdbs_with_experimental(output_directory, pdb_list, experimental_file)
     np.savetxt("SimulatedIntensities.txt", intensities)
