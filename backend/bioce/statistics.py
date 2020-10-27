@@ -3,6 +3,7 @@ Post distibution statistics
 Chi2 and Jensen-Shanon Divergence caluclators
 """
 import numpy as np
+from freesas import cormap
 
 def calculateChiCrysol(weightedIns, expIns, expErr):
         """
@@ -102,3 +103,14 @@ def waic(log_lik):
     p_waic = np.sum(np.var(log_lik, axis=0))
 
     return -2 * lppd + 2 * p_waic
+
+def calculateCormap(data1, data2):
+    """
+    Calcultaes cormap using freesas
+
+    :param data1: simulated intensity numpy array
+    :param data2: experimental intensity numpy array
+    :return:
+    """
+    results = cormap.gof(data1, data2)
+    return results

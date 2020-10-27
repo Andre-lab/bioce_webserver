@@ -16,7 +16,7 @@ from TIStan import TIStan
 import backend.bioce.psisloo as psisloo
 import backend.bioce.stan_utility as stan_utility
 
-from backend.bioce.statistics import calculateChiCrysol, calculateChemShiftsChi, JensenShannonDiv, waic
+from backend.bioce.statistics import calculateChiCrysol, calculateChemShiftsChi, JensenShannonDiv, waic, calculateCormap
 from backend.bioce.stan_models import stan_code, stan_code_CS, stan_code_EP, stan_code_EP_CS, \
     psisloo_quanities
 import pickle
@@ -388,9 +388,9 @@ def calculate_stats(output_directory, fit, experimental, simulated, cs_simulated
             jsd_sum+=JensenShannonDiv(current_weights, bayesian_weights)
     jsd = (np.sqrt(jsd_sum/nsamples))
 
+    ensemble_intensity = np.dot(bayesian_weights, np.transpose(simulated))
 
-    crysol_chi2 = calculateChiCrysol(np.dot(bayesian_weights,
-                            np.transpose(simulated)), experimental[:,1],
+    crysol_chi2 = calculateChiCrysol(ensemble_intensity, experimental[:,1],
                             experimental[:,2])
     try:
         if cs_experimental.any() != None:
@@ -406,13 +406,17 @@ def calculate_stats(output_directory, fit, experimental, simulated, cs_simulated
     bayesian_rhat = fit.summary(pars='weights')['summary'][:, -1]
     combine_curve(output_directory, experimental, simulated, bayesian_weights, scale)
 
+    corrmap = calculateCormap(ensemble_intensity, experimental[:,2])
+
     if chemical_shifts_on:
         chemshift_chi2 = calculateChemShiftsChi(np.dot(bayesian_weights,
                             np.transpose(cs_simulated)), cs_experimental[:,0],
                             cs_experimental[:,1], cs_rms)
-        return bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2, chemshift_chi2
+        return bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, \
+               jsd, crysol_chi2, chemshift_chi2, corrmap
     else:
-        return bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2
+        return bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, \
+               jsd, crysol_chi2, corrmap
 
 def read_file_safe(filename, dtype="float64"):
     """

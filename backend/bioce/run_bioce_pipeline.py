@@ -241,7 +241,7 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     fit = cbi.execute_stan(output_directory, experimental, simulated, priors,
                                    iterations, chains, njobs)
 
-    bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2 = \
+    bayesian_weights, bayesian_sem, bayesian_sd, bayesian_neff, bayesian_rhat, jsd, crysol_chi2, corrmap = \
         cbi.calculate_stats(output_directory, fit, experimental, simulated)
 
     model_evidence = cbi.calculate_model_evidence(experimental, simulated, priors)
@@ -256,6 +256,7 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     output_file.write("JSD : " + str(jsd) + '\n')
     output_file.write("Chi2 : " + str(crysol_chi2) + '\n')
     output_file.write("Model Evidence : " + str(model_evidence) + '\n')
+    output_file.write("Cormap : " + str(corrmap) + '\n')
     output_file.close()
 
     save_selected_pdbfiles(analysis_directory, output_directory, data_labels)
