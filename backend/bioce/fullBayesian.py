@@ -406,7 +406,7 @@ def calculate_stats(output_directory, fit, experimental, simulated, cs_simulated
     bayesian_rhat = fit.summary(pars='weights')['summary'][:, -1]
     combine_curve(output_directory, experimental, simulated, bayesian_weights, scale)
 
-    corrmap = calculateCormap(ensemble_intensity, experimental[:,2])
+    corrmap = calculateCormap(ensemble_intensity, experimental[:,1])
 
     if chemical_shifts_on:
         chemshift_chi2 = calculateChemShiftsChi(np.dot(bayesian_weights,
