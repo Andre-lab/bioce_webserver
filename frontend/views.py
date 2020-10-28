@@ -344,7 +344,8 @@ def vis(user_id, analysis_id, data_file):
     #INFERRED MODELS
 
     cbi_output_file = os.path.join(user_folder, study_folder, analysis_folder,'output','cbi_output.txt')
-    models_names, models_weights, models_sem, models_sd, models_neff, models_rhat, model_evidence, chi2, jsd = \
+    models_names, models_weights, models_sem, models_sd, models_neff, models_rhat,\
+    model_evidence, chi2, jsd, corrmap_string = \
         get_ensemble_values(cbi_output_file )
 
     vis_analysis_folder =  os.path.join(username, study_folder, analysis_folder)
@@ -356,7 +357,8 @@ def vis(user_id, analysis_id, data_file):
                            analysis_name=analysis_name,
                            user_id=user_id, analysis_id=analysis_id,
                            data_file=data_file, ensemble_models = ensemble_models,
-                           model_evidence = round(model_evidence,2), jsd = round(jsd,2), chi2 = round(chi2,2))
+                           model_evidence = round(model_evidence,2), jsd = round(jsd,2),
+                           chi2 = round(chi2,2), cormap = corrmap_string)
 
 # =============================================================================
 #

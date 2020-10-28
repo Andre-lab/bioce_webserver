@@ -323,8 +323,10 @@ def get_ensemble_values(cbi_output_file):
         model_sd.append(round(float(result_row[3]), 2))
         model_neff.append(round(float(result_row[4]),1))
         model_rhat.append(round(float(result_row[5]),1))
-    model_evidence = float(lines[-1].split(":")[1])
-    chi2 = float(lines[-2].split(":")[1])
-    jsd = float(lines[-3].split(":")[1])
+    cormap_string = lines[-1].split(":")[1].strip()[4:-1]
+    model_evidence = float(lines[-2].split(":")[1])
+    chi2 = float(lines[-3].split(":")[1])
+    jsd = float(lines[-4].split(":")[1])
 
-    return model_names, model_weights, model_sem, model_sd, model_neff, model_rhat, model_evidence, chi2, jsd
+    return model_names, model_weights, model_sem, model_sd, model_neff, model_rhat, \
+           model_evidence, chi2, jsd, cormap_string
