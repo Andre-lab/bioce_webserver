@@ -319,7 +319,7 @@ def get_ensemble_values(cbi_output_file):
         else:
             break
         model_weights.append(round(float(result_row[1]),2))
-        model_sem.append(round(float(result_row[2]),2))
+        model_sem.append(round(float(result_row[2]),3))
         model_sd.append(round(float(result_row[3]), 2))
         model_neff.append(round(float(result_row[4]),1))
         model_rhat.append(round(float(result_row[5]),1))
