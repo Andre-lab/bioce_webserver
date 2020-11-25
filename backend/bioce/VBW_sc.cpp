@@ -827,16 +827,17 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 
 		energy_current = L_function(simAnBlock);
 
-        //If L_function doesn't improve after 10 iterations exit program
-		newL = 0;
+        newL = 0;
 		m = 0; 
 		alpha_zero = 0.0;
 		for ( int i = 0; i < L; i++ ) alpha_zero +=simAnBlock->alphas[i];
 
 		double new_alpha_zero = 0.0;
+		cout<<"DEBUG: Iteration weights "
 		for ( int i = 0; i < k; i++ ) {
 			if ( removed_indexes[i]==false ) {
 				double wib = simAnBlock->alphas[m]/alpha_zero;
+				cout<<wib<<" ";
 				if ( wib < w_cut ) {
 					gsl_vector_set( alpha_ens_current, i, 0.0 );
 					gsl_vector_set( w_ens_current, i, 0.0);
@@ -849,7 +850,7 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 				m++;
 			}
 		}
-
+        cout<<std::endl;
 		if (newL == 0) {
 		    cout<<"All models have been removed by weight thresholding. Stopping simulations"<<std::endl;
             break;
@@ -914,6 +915,7 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 		gsl_vector_free(alpha_pre_round);
         gsl_vector_free(rosetta_engeries_round);
 
+        //If L_function doesn't improve after 10 iterations exit program
 		if ((overall_iteration-last_updated)>10) {
             cout<<"Energy hasn't decreased for 10 iterations. Stopping simulations"<<std::endl;
             break;
