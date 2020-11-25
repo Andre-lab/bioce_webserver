@@ -225,7 +225,7 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     :return:
     """
     njobs = 1
-    chains = 1
+    chains = 4
 
     output_file = open(output_name,'w')
     # Files loading

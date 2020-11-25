@@ -434,7 +434,7 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
     double T_MIN;
 
     //TODO: Samples, set to maximum 5000, which is also the maximum number of iterations.
-	int samples = 500;
+	int samples = 100;
 
     ofstream output(outfile,  std::ofstream::out | std::ofstream::trunc);
 
