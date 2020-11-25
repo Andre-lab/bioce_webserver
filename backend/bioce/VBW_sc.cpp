@@ -493,7 +493,7 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 	inFile = fopen(pre_weight_file.c_str(),"r"); gsl_vector_fscanf(inFile,w_pre); fclose(inFile);
 	//Read prior alphas
 	if (rosettaPrior) {
-            std::cout<<"Loading structural priors"<<std::endl;
+        std::cout<<"Loading structural priors"<<std::endl;
 	    inFile = fopen(structure_energy_file.c_str(),"r");
 	    gsl_vector_fscanf(inFile,rosetta_engeries);
 	    fclose(inFile);
@@ -849,15 +849,16 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 				m++;
 			}
 		}
-		
-		//int wdelta_count = 0;
+
+		if (newL == 0) {
+		    cout<<"All models have been removed by weight thresholding. Stopping simulations"<<std::endl;
+            break;
+		}
 		for ( int i = 0; i < k; i++ ) {
             if (removed_indexes[i]==false) {
 				gsl_vector_set( w_ens_current,i,gsl_vector_get(alpha_ens_current,i)/new_alpha_zero );
 			}
 		}
-		//Stoping simulations if weights don't change for more than delta (0.001)
-		//if (wdelta_count == newL) {cout<<"Simulations stopped because weights don't progress"<<std::endl; break;}
 
 		gsl_blas_dgemv(CblasNoTrans, 1.0, saxs_pre, w_ens_current, 0.0, saxs_ens_current);
 	    saxs_scale_current = SaxsScaleMean(saxs_ens_current,saxs_exp,err_saxs,N);
@@ -886,35 +887,25 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 
         //Calculating posterior expected divergence
         //TODO: Make a cluean-up with vector
-        //double jsd1_sum = 0.0;
         double jsd1 = 0.0;
-        //for (int s=0; s<sampling_step; s++) {
-        //for (int j=0; j<k; j++) {
-        // gsl_vector_set(bayesian_weight1,j,gsl_matrix_get(weight_samples,s,j));
-        //}
         jsd1 = jensen_shannon_div(bayesian_weight1_current,w_ens_current,k);
-        //jsd1_sum += sqrt(jsd1);
-	jsd1_sum += jsd1;
-        //}
+	    jsd1_sum += jsd1;
 
 		if (energy_current < energy_min) {
 			energy_min = energy_current;
             last_updated = overall_iteration;
-		} //Adding this one WOjtek
-			for( int l = 0; l < k; l++) {
-                gsl_vector_set(memory, l , gsl_vector_get(w_ens_current,l));
-        	}
+		}
+		for( int l = 0; l < k; l++) {
+		    gsl_vector_set(memory, l , gsl_vector_get(w_ens_current,l));
+        }
 
-        	gsl_vector_set(memory, k, saxs_scale_current);
-        	gsl_vector_set(memory, k+1, energy_current);
-            gsl_vector_set(memory, k+2, chi2);
-            gsl_vector_set(memory, k+3, jsd1);
-        	//All weights scale factor, energy_currenr and chi2
-        	for( int j = 0; j < k + 3; j++) output << gsl_vector_get(memory,j) << " ";
-        	output <<gsl_vector_get(memory,k+3)<<endl;
-			//output.close();
-		//}
-
+        gsl_vector_set(memory, k, saxs_scale_current);
+        gsl_vector_set(memory, k+1, energy_current);
+        gsl_vector_set(memory, k+2, chi2);
+        gsl_vector_set(memory, k+3, jsd1);
+        //All weights scale factor, energy_currenr and chi2
+        for( int j = 0; j < k + 3; j++) output << gsl_vector_get(memory,j) << " ";
+        output <<gsl_vector_get(memory,k+3)<<endl;
 
 		free(saxs_mix_round);
 		gsl_matrix_free(saxs_pre_round);
@@ -987,8 +978,9 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 	    fitoutput<<gsl_vector_get(err_saxs,i)<<std::endl;
     }
 
-    double model_evd;
-    model_evd = mc_integrate(saxs_pre_selected, saxs_exp, err_saxs, L, N);
+    double model_evd=0.0;
+    //TODO: Skipping model evidence calculation for webserver becuase it is calculated later anyway
+    //model_evd = mc_integrate(saxs_pre_selected, saxs_exp, err_saxs, L, N);
     output<<"\nModel Evidence: "<<model_evd<<std::endl;
     output.close();
     fitoutput.close();
