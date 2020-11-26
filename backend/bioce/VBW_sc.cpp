@@ -833,12 +833,21 @@ void run_vbw(const int &again, const int &k, const std::string &pre_weight_file,
 		for ( int i = 0; i < L; i++ ) alpha_zero +=simAnBlock->alphas[i];
 
 		double new_alpha_zero = 0.0;
-		cout<<"DEBUG: Iteration weights "
+		double current_w_cut = w_cut;
+
+		//For first iterations keep w_cut low
+		if (overall_iteration < 5) {
+		    if (w_cut > 1.0/k) {
+		        current_w_cut = 1.0/k;
+		    }
+		}
+
+		cout<<"DEBUG: Iteration weights with "<<current_w_cut<<" ";
 		for ( int i = 0; i < k; i++ ) {
 			if ( removed_indexes[i]==false ) {
 				double wib = simAnBlock->alphas[m]/alpha_zero;
 				cout<<wib<<" ";
-				if ( wib < w_cut ) {
+				if ( wib < current_w_cut ) {
 					gsl_vector_set( alpha_ens_current, i, 0.0 );
 					gsl_vector_set( w_ens_current, i, 0.0);
 					removed_indexes[i] = true;
