@@ -54,7 +54,7 @@
         var stage = new NGL.Stage("viewport", {backgroundColor:'white'});
         stage.loadFile("{{ url_for('get_file', user_id=user_id, study_id=analysis_id, analysis=1,
         file=analysis_folder+'/output/ensemble.pdb') }}").then(function (o) {
-        o.addRepresentation("cartoon", {colorScheme: "modelindex"});
+        o.addRepresentation("surface", {colorScheme: "modelindex"});
         o.autoView();
         });
         });
