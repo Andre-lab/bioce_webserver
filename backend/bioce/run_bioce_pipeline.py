@@ -332,7 +332,7 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
     return job_done
 
 def run_bioce(params, weight_cut, iterations):
-    pdb_files = params['pdb_file']
+    pdb_files = params['pdb_files']
     simulated = params['simulated']
     simulated_custom_file = params['simulated_custom']
     priors = params['priors']
@@ -402,11 +402,11 @@ if __name__ == "__main__":
     params['simulated'] = 'SimulatedIntensities.txt'
     params['simulated_custom'] = None
     params['priors'] = 'weights.txt'
-    params['experimental'] = 'experimental_test.dat'
-    params['file_list'] = 'file_list'
+    params['experimental'] = 'exp_test_10pts.dat'
+    params['file_list'] = 'file_list.txt'
 
-    params['analysis_folder'] ='analysis_folder'
-    params['output_folder'] = 'output_folder'
+    params['analysis_folder'] ='test_data'
+    params['output_folder'] = 'test_data'
     weight_cutoff = 0.01
     iterations = 2000
     job_done = run_bioce(params, weight_cutoff, iterations)
