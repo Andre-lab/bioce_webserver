@@ -398,15 +398,13 @@ def run_bioce(params, weight_cut, iterations):
 
 if __name__ == "__main__":
     params = {}
-    params['pdb_files'] = 'pdbs.zip'
-    params['simulated'] = 'SimulatedIntensities.txt'
-    params['simulated_custom'] = None
-    params['priors'] = 'weights.txt'
-    params['experimental'] = 'exp_test_10pts.dat'
-    params['file_list'] = 'file_list.txt'
-
+    params['dataset1'] = 'exp_test_10pts.dat'
+    params['dataset2'] = 'pdbs.zip'
+    params['dataset3'] = 'SimulatedIntensities.txt'
+    
+    params['study_folder'] = 'test_data'
     params['analysis_folder'] ='test_data'
     params['output_folder'] = 'test_data'
     weight_cutoff = 0.01
     iterations = 2000
-    job_done = run_bioce(params, weight_cutoff, iterations)
+    job_done = run_bioce_from_webserver(params, weight_cutoff, iterations)
