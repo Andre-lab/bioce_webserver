@@ -156,6 +156,23 @@ sudo systemctl restart apache2
 You should be able to log in with the admin credentials you specified in `frontend/config.py`.
 Go to the Profile page and then to the Admin panel (botton right corner). 
 
+14. __Celery issues__
+From time to time celery seems to stop working. The quick troubleshooting is:
+```
+ps -ef | grep supervisord
+```
+To see if supervisord is running (by bioce - there may be other job by other user) then try either start or restart: 
+```
+supervisorctl start celeryd
+```
+If you encounter error: 
+```
+unix:///tmp/supervisor.sock no such file
+```
+try running: 
+```
+supervisord -c supervisord.conf
+```
 
 
 
