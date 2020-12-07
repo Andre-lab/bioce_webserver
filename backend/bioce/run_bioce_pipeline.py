@@ -331,48 +331,63 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
 
     return job_done
 
-def run_bioce(params):
-    pdb_files = params[0]
-    simulated = params[1]
-    priors = params[2]
-    experimental = params[3]
-    output = params[4]
-    file_list = params[5]
+def run_bioce(params, weight_cut, iterations):
+    pdb_files = params['pdb_file']
+    simulated = params['simulated']
+    simulated_custom_file = params['simulated_custom']
+    priors = params['priors']
+    experimental = params['experimental']
+    file_list = params['file_list']
     #We need to intrdduce some heuristic here
 
+    vbi_simulated = os.path.join(params['analysis_folder'], 'vbi_SimulatedIntensities.txt')
+    vbi_file_list = os.path.join(params['analysis_folder'], 'vbi_file_list.txt')
+    vbi_priors = os.path.join(params['analysis_folder'], 'vbi_weights.txt')
+    vbi_output = os.path.join(params['output_folder'], 'vbi_output.txt')
+    cbi_output = os.path.join(params['output_folder'], 'cbi_output.txt')
     job_done = True
-
-    with zipfile.ZipFile(pdb_files, 'r') as zipObj:
-        for zip_info in zipObj.infolist():
-            if zip_info.filename.startswith('__MACOSX/') or zip_info.filename[-1] == '/':
-                continue
-            zip_info.filename = os.path.basename(zip_info.filename)
-            zipObj.extract(zip_info)
-            pdb_list = zipObj.namelist()
-
-    number_of_structures = len(pdb_list)
-    maximum_cut = 0.01
-    winvert = 1.0/number_of_structures
-    weight_cut = winvert if winvert < maximum_cut else maximum_cut
+    pdb_list = []
 
     try:
-        simulate_profiles(pdb_list, experimental)
+        with zipfile.ZipFile(pdb_files, 'r') as zipObj:
+            for zip_info in zipObj.infolist():
+                if zip_info.filename.startswith('__MACOSX/') or zip_info.filename[-1] == '/':
+                    continue
+                zip_info.filename = os.path.basename(zip_info.filename)
+                zipObj.extract(zip_info, params['analysis_folder'])
+                pdb_list.append(zip_info.filename)
+    except:
+        print("Failed to extract zipfile")
+        job_done = False
+        raise
+
+    # TODO: Skip this step if simulated profiles are provided
+
+    try:
+        generate_file_list(params['analysis_folder'], pdb_list)
+        generate_weights(params['analysis_folder'], pdb_list)
+        if simulated_custom_file is None:
+            simulate_profiles(params['analysis_folder'], pdb_list, experimental)
+        else:
+            print('Using custom simulated SAS profiles')
     except:
         print("Failed to simulate profiles")
         job_done = False
         raise
 
-    #simulated = 'SimulatedIntensitiesTest.txt'
+    # simulated = 'SimulatedIntensitiesTest.txt'
     try:
-        run_variational(simulated, priors, experimental, 'vbi_'+output, file_list, weight_cut)
-        simulated, priors, file_list = process_variational('vbi_'+output, simulated, priors, file_list)
+        run_variational(simulated, priors, experimental, vbi_output, file_list, weight_cut)
+        process_variational(vbi_output, simulated, file_list, vbi_simulated, vbi_file_list, vbi_priors)
     except:
         print("Failed to perform Variational analysis")
         job_done = False
         raise
 
     try:
-        run_complete(simulated, priors, experimental, 'cbi_'+output, file_list)
+        run_complete(params['output_folder'], params['analysis_folder'],
+                     vbi_simulated, vbi_priors, experimental, cbi_output,
+                     vbi_file_list, iterations)
     except:
         print("Failed to perform Complete analysis")
         job_done = False
@@ -380,12 +395,18 @@ def run_bioce(params):
 
     return job_done
 
+
 if __name__ == "__main__":
-    pdb_files = 'pdbs.zip'
-    simulated = 'SimulatedIntensities.txt'
-    priors = 'weights.txt'
-    experimental = 'experimental_test.dat'
-    output = 'output.txt'
-    file_list = 'file_list'
-    params = [pdb_files,simulated,priors,experimental,output,file_list]
-    job_done = run_bioce(params)
+    params = {}
+    params['pdb_files'] = 'pdbs.zip'
+    params['simulated'] = 'SimulatedIntensities.txt'
+    params['simulated_custom'] = None
+    params['priors'] = 'weights.txt'
+    params['experimental'] = 'experimental_test.dat'
+    params['file_list'] = 'file_list'
+
+    params['analysis_folder'] ='analysis_folder'
+    params['output_folder'] = 'output_folder'
+    weight_cutoff = 0.01
+    iterations = 2000
+    job_done = run_bioce(params, weight_cutoff, iterations)
