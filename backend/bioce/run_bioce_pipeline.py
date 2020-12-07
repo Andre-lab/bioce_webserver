@@ -331,77 +331,12 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
 
     return job_done
 
-def run_bioce(params, weight_cut, iterations):
-    pdb_files = params['pdb_files']
-    simulated = params['simulated']
-    simulated_custom_file = params['simulated_custom']
-    priors = params['priors']
-    experimental = params['experimental']
-    file_list = params['file_list']
-    #We need to intrdduce some heuristic here
-
-    vbi_simulated = os.path.join(params['analysis_folder'], 'vbi_SimulatedIntensities.txt')
-    vbi_file_list = os.path.join(params['analysis_folder'], 'vbi_file_list.txt')
-    vbi_priors = os.path.join(params['analysis_folder'], 'vbi_weights.txt')
-    vbi_output = os.path.join(params['output_folder'], 'vbi_output.txt')
-    cbi_output = os.path.join(params['output_folder'], 'cbi_output.txt')
-    job_done = True
-    pdb_list = []
-
-    try:
-        with zipfile.ZipFile(pdb_files, 'r') as zipObj:
-            for zip_info in zipObj.infolist():
-                if zip_info.filename.startswith('__MACOSX/') or zip_info.filename[-1] == '/':
-                    continue
-                zip_info.filename = os.path.basename(zip_info.filename)
-                zipObj.extract(zip_info, params['analysis_folder'])
-                pdb_list.append(zip_info.filename)
-    except:
-        print("Failed to extract zipfile")
-        job_done = False
-        raise
-
-    # TODO: Skip this step if simulated profiles are provided
-
-    try:
-        generate_file_list(params['analysis_folder'], pdb_list)
-        generate_weights(params['analysis_folder'], pdb_list)
-        if simulated_custom_file is None:
-            simulate_profiles(params['analysis_folder'], pdb_list, experimental)
-        else:
-            print('Using custom simulated SAS profiles')
-    except:
-        print("Failed to simulate profiles")
-        job_done = False
-        raise
-
-    # simulated = 'SimulatedIntensitiesTest.txt'
-    try:
-        run_variational(simulated, priors, experimental, vbi_output, file_list, weight_cut)
-        process_variational(vbi_output, simulated, file_list, vbi_simulated, vbi_file_list, vbi_priors)
-    except:
-        print("Failed to perform Variational analysis")
-        job_done = False
-        raise
-
-    try:
-        run_complete(params['output_folder'], params['analysis_folder'],
-                     vbi_simulated, vbi_priors, experimental, cbi_output,
-                     vbi_file_list, iterations)
-    except:
-        print("Failed to perform Complete analysis")
-        job_done = False
-        raise
-
-    return job_done
-
-
 if __name__ == "__main__":
     params = {}
     params['dataset1'] = 'exp_test_10pts.dat'
     params['dataset2'] = 'pdbs.zip'
     params['dataset3'] = 'SimulatedIntensities.txt'
-    
+
     params['study_folder'] = 'test_data'
     params['analysis_folder'] ='test_data'
     params['output_folder'] = 'test_data'
