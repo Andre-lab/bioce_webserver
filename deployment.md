@@ -174,6 +174,11 @@ try running:
 supervisord -c supervisord.conf
 ```
 
-
+15. __Mozarella installation__
+```
+sudo apt install apache2
+sudo apt install python3-pip
+sudo apt-get install libgsl-dev
+```
 
 
