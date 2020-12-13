@@ -179,6 +179,8 @@ supervisord -c supervisord.conf
 sudo apt install apache2
 sudo apt install python3-pip
 sudo apt-get install libgsl-dev
+
+sudo apt install certbot python3-certbot-apache
 ```
 
 
