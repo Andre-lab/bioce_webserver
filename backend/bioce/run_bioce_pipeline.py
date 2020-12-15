@@ -13,6 +13,11 @@ import numpy as np
 import os
 import shutil
 import pickle
+os.environ['MPLCONFIGDIR'] = "/tmp"
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def read_file_safe(filename, dtype="float64", skip_lines=0):
@@ -142,10 +147,6 @@ def plot_weights(directory, data_labels, fit):
     :param fit:
     :return:
     """
-    import matplotlib
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-    matplotlib.use("Agg")
 
     #Pytsan native solution - deprecated
     #fig = fit.plot(pars="weights")
@@ -172,9 +173,6 @@ def plot_fit(directory, chi2):
     :param chi2:
     :return:
     """
-    import matplotlib
-    import matplotlib.pyplot as plt
-    matplotlib.use("Agg")
 
     fit_file = os.path.join(directory,'cbi_output.txt.fit')
     data = read_file_safe(fit_file)

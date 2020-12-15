@@ -11,7 +11,9 @@ import os
 import optparse
 
 import numpy as np
+os.environ['MPLCONFIGDIR'] = "/tmp"
 import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 def read_file_safe(filename, dtype="float64"):
