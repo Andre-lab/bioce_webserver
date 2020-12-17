@@ -1,9 +1,14 @@
 
-# Depoyment on murcof
+# Depoyment on bioce (vm on mozzarella)
 
 1. Apache should be installed from webmin, one still needs to install mod_wsgi module:
 ```
+sudo apt-get install apache2
+sudo apt-get install python3-pip
 sudo apt-get install libapache2-mod-wsgi-py3
+sudo apt-get install supervisor
+sudo apt-get install libgsl-dev
+sudo apt-get install swig 
 ```
 
 2. Now __clone the BioCE webserver repo__ and register the app with apache and make a few folders:
@@ -14,16 +19,15 @@ mkdir failedAnalyses
 mkdir userData
 ```
 
-3. __Install all Python packages__ to native python (It didn't work with Anaconda!):
+3. __Install all Python packages__ to native python (Need to change it to requirements file):
 ```
-pip install flask flask-mail flask-sqlalchemy flask-login flask-security flask-admin flask-migrate requests email_validator seaborn pystan pandas
+pip install flask flask-mail flask-sqlalchemy flask-login flask-security flask-admin flask-migrate requests email_validator seaborn pystan pandas freesas
 ```
 
 4. __Compile vbi module__
 ```
-(Make sure swig is installed) sudo apt-get install swig 
 swig -python -c++ -o vbw_sc_wrap.cpp vbw_sc.i
-g++ -c VBW_sc.cpp vbw_sc_wrap.cpp -shared -fpic -I/usr/include/python3.6 -fopenmp -O3 -lgsl -lgslcblas -lm -std=c++11
+g++ -c VBW_sc.cpp vbw_sc_wrap.cpp -shared -fpic -I/usr/include/python3.8 -fopenmp -O3 -lgsl -lgslcblas -lm -std=c++11
 g++ -shared VBW_sc.o vbw_sc_wrap.o -o _vbwSC.so -fopenmp -lgsl -lgslcblas -lm -std=c++11
 ```
 
@@ -32,40 +36,45 @@ g++ -shared VBW_sc.o vbw_sc_wrap.o -o _vbwSC.so -fopenmp -lgsl -lgslcblas -lm -s
 6. __Edit config file for Apache__:
  
  ```
- vi /etc/apache2/sites-enabled/bioce.andrelab.org.conf 
+ vi /etc/apache2/sites-enabled/0000-default.conf 
  ```
  
- Copy and paste the following:
+Remove what is in the file and copy and paste the following:
  
  ```
+<VirtualHost *:80>
+  
+ServerAdmin admin@bioce.plantbio.lu.se
+ServerName bioce.plantbio.lu.se
+DocumentRoot /var/www/html/
 
-<VirtualHost *:443>
+#Redirect permanent / http://130.235.135.6
 
-        <Directory /home/bioce/public_html/frontend>
-            WSGIProcessGroup frontend
-            WSGIApplicationGroup %{GLOBAL}
-            Order deny,allow
-            Allow from all
-        </Directory>
+WSGIDaemonProcess frontend user=wojtek group=wojtek processes=1 threads=1
+WSGIScriptAlias / /var/www/html/bioce_webserver/frontend/frontend.wsgi process-group=frontend application-group=%{GLOBAL}
 
-        <Directory /home/bioce/public_html>
-            WSGIProcessGroup frontend
-            WSGIApplicationGroup %{GLOBAL}
-            Order deny,allow
-            Allow from all
-        </Directory>
+<Directory /var/www/html/bioce_webserver/frontend>
+WSGIProcessGroup frontend
+WSGIApplicationGroup %{GLOBAL}
+Require all granted
+</Directory>
 
-        # Static Directories
-        Alias /static /home/bioce/public_html/frontend/static/
-        <Location "/static">
-                SetHandler None
-        </Location>
+<Directory /var/www/html/bioce_webserver>
+WSGIProcessGroup frontend
+WSGIApplicationGroup %{GLOBAL}
+Require all granted
+</Directory>
+
+#Static Directories
+Alias /static /var/www/html/bioce_webserver/frontend/static/
+<Location "/static">
+SetHandler None
+</Location>
 
 </VirtualHost>
  ```
-Make sure you actually go through this file and make sure everything makes sense
-for __your__ app.
- 
+It seems that since our access point is running ssl certificate and the server is behind firewall it doesn't require additional SSL setup on `bioce`
+
 7. __Customize `frontend/config_example.py`__ and rename it to `frontend/config.py`
     1. Generate a secret key for your app like [this](https://pythonadventures.wordpress.com/2015/01/01/flask-generate-a-secret-key/)
     2. Setup the username, email, password for the admin. You can then log in with
@@ -119,6 +128,12 @@ Celery would need to run as a daemon process in the background. For this we'll u
  the very powerful [supervisord package](http://supervisord.org/). It can do __much__
   more than this so definitely have a look at the docs.
  
+ Once supervisor is installed from packages is it should be enough to copy config file: 
+ ```
+ sudo cp /home/wojtek/public_html/bioce_webserver/supervisor.conf /etc/supervisor/supervisord.conf
+ ```
+The remaining part about celery is deprecated but leaving it for the record in case one wants to run it from pip installable package
+ 
  [Here's](https://thomassileo.name/blog/2012/08/20/how-to-keep-celery-running-with-supervisor/) 
  a quick tutorial on how  to setup supervisor with Celery.
  
@@ -156,31 +171,5 @@ sudo systemctl restart apache2
 You should be able to log in with the admin credentials you specified in `frontend/config.py`.
 Go to the Profile page and then to the Admin panel (botton right corner). 
 
-14. __Celery issues__
-From time to time celery seems to stop working. The quick troubleshooting is:
-```
-ps -ef | grep supervisord
-```
-To see if supervisord is running (by bioce - there may be other job by other user) then try either start or restart: 
-```
-supervisorctl start celeryd
-```
-If you encounter error: 
-```
-unix:///tmp/supervisor.sock no such file
-```
-try running: 
-```
-supervisord -c supervisord.conf
-```
-
-15. __Mozarella installation__
-```
-sudo apt install apache2
-sudo apt install python3-pip
-sudo apt-get install libgsl-dev
-
-sudo apt install certbot python3-certbot-apache
-```
 
 
