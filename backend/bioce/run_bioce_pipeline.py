@@ -276,15 +276,15 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     output_file.write("Cormap : " + str(corrmap) + '\n')
     output_file.close()
 
-    #TODO: Need to introduce check here for dummy files and use different combine function
     save_selected_pdbfiles(analysis_directory, output_directory, data_labels)
 
-    # TODO: To be implemented - check if used pdb files have dummy atom format
     dummy = check_if_dummy(output_directory, data_labels)
-
     if dummy:
-        supcomb_models(output_directory, data_labels)
-    combine_models(output_directory, data_labels)
+        aligned_data_labels = supcomb_models(output_directory, data_labels)
+        combine_models(output_directory, aligned_data_labels)
+    else:
+        combine_models(output_directory, data_labels)
+
     plot_weights(output_directory, data_labels, fit)
     plot_fit(output_directory, crysol_chi2)
 
