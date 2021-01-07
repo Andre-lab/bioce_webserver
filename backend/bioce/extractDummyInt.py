@@ -22,15 +22,20 @@ def read_file_safe(filename, skip_lines, dtype="float64"):
 def combine_intensities(fir_list):
     fir_array = []
     for fir_file in fir_list:
+        fir_file = fir_file.strip('\n')
         if fir_file[-3:] == 'fir':
             data = read_file_safe(fir_file, 1)
             fir_array.append(data[:,4])
-    np.savetxt('SimulatedIntensities.dat')
+    np.savetxt('SimulatedIntensities.dat', np.transpose(fir_array))
 
 def setup_exp_file(fir_list):
     fir_file = fir_list[0]
-    data = read_file_safe(fir_file, 0)
-    np.savetxt('Experimental.dat', data[,:3])
+    fir_file = fir_file.strip('\n')
+    data = read_file_safe(fir_file, 1)
+    q_data = data[:,0]
+    int_data = data[:, 1]
+    err_data = data[:, 2]
+    np.savetxt('Experimental.dat',  np.c_[q_data, int_data, err_data])
 
 if __name__ == "__main__":
     fir_list = open(sys.argv[1]).readlines()
