@@ -18,7 +18,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from supDummy import supcomb_models
 
 def read_file_safe(filename, dtype="float64", skip_lines=0):
     """
@@ -54,6 +54,25 @@ def simulate_profiles(directory, pdb_list, experimental_filename):
     simulate_profiles = os.path.join(directory, "SimulatedIntensities.txt")
     np.savetxt(simulate_profiles, intensities)
 
+def check_if_dummy(output_directory, pdb_list):
+    """
+    Checks if pdb files given in the list have dummy atom format by simply looking at atom type
+    Maybe quite lenghty if one needs to run on all models better run after VBI
+    :param pdb_list:
+    :return:
+    """
+    dummy = True
+    for fname in pdb_list:
+        pdb_lines = open(os.path.join(output_directory,fname)).readlines()
+        atom_types = []
+        for line in pdb_lines:
+            if line[:4] == "ATOM":
+                atom_type = line[13:15]
+                if atom_type not in atom_types:
+                    atom_types.append(atom_type)
+        if len(atom_types) > 2:
+            dummy = False
+    return dummy
 
 def run_variational(simulated, priors, experimental, output, file_list, weight_cut):
     """
@@ -257,12 +276,20 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     output_file.write("Cormap : " + str(corrmap) + '\n')
     output_file.close()
 
+    #TODO: Need to introduce check here for dummy files and use different combine function
     save_selected_pdbfiles(analysis_directory, output_directory, data_labels)
+
+    # TODO: To be implemented - check if used pdb files have dummy atom format
+    dummy = check_if_dummy(output_directory, data_labels)
+
+    if dummy:
+        supcomb_models(output_directory, data_labels)
     combine_models(output_directory, data_labels)
     plot_weights(output_directory, data_labels, fit)
     plot_fit(output_directory, crysol_chi2)
 
 def run_bioce_from_webserver(params, weight_cut, iterations):
+
     experimental = os.path.join(params['study_folder'],params['dataset1'])
     pdb_files = os.path.join(params['study_folder'],params['dataset2'])
     #Standard file names
@@ -295,8 +322,6 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
         job_done = False
         raise
 
-    #TODO: Skip this step if simulated profiles are provided
-
     try:
         generate_file_list(params['analysis_folder'], pdb_list)
         generate_weights(params['analysis_folder'], pdb_list)
@@ -309,7 +334,6 @@ def run_bioce_from_webserver(params, weight_cut, iterations):
         job_done = False
         raise
 
-    #simulated = 'SimulatedIntensitiesTest.txt'
     try:
         run_variational(simulated, priors, experimental, vbi_output, file_list, weight_cut)
         process_variational(vbi_output, simulated, file_list, vbi_simulated, vbi_file_list,  vbi_priors)
