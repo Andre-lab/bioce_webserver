@@ -13,7 +13,7 @@ def supcomb_models(output_directory, file_list):
 
     reference = file_list[0]
     src_file = os.path.join(output_directory, reference)
-    aligned_data_labels =  f'aligned_{reference}'
+    aligned_data_labels =  [f'aligned_{reference}']
     dest_file = os.path.join(output_directory, f'aligned_{reference}')
 
     shutil.copyfile(src_file, dest_file)
