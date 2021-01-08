@@ -274,11 +274,13 @@ def run_complete(output_directory, analysis_directory, simulated_file, priors_fi
     output_file.write("Chi2 : " + str(crysol_chi2) + '\n')
     output_file.write("Model Evidence : " + str(model_evidence) + '\n')
     output_file.write("Cormap : " + str(corrmap) + '\n')
-    output_file.close()
 
     save_selected_pdbfiles(analysis_directory, output_directory, data_labels)
 
     dummy = check_if_dummy(output_directory, data_labels)
+    output_file.write("Dummy : " + str(dummy) + '\n')
+    output_file.close()
+
     if dummy:
         aligned_data_labels = supcomb_models(output_directory, data_labels)
         combine_models(output_directory, aligned_data_labels)
