@@ -310,6 +310,7 @@ def get_ensemble_values(cbi_output_file):
     model_sd = []
     model_neff = []
     model_rhat = []
+    #TODO: Store information about dummy format in cbi output
     lines = cbi_out.readlines()
     for line in lines:
         result_row = line.split(':')
@@ -323,14 +324,14 @@ def get_ensemble_values(cbi_output_file):
         model_sd.append(round(float(result_row[3]), 2))
         model_neff.append(round(float(result_row[4]),1))
         model_rhat.append(round(float(result_row[5]),1))
-    cormap_string = lines[-1].split(":")[1].strip()[4:-1].split('=')
+    dummy = lines[-1].split(":")[1]
+    cormap_string = lines[-2].split(":")[1].strip()[4:-1].split('=')
     cormap_n = cormap_string[1].split(',')[0]
     cormap_C = cormap_string[2].split(',')[0]
     cormap_P = round(float(cormap_string[3]),3)
     cormap_string = f"n = {cormap_n}, C = {cormap_C}, P = {cormap_P} "
-    model_evidence = float(lines[-2].split(":")[1])
-    chi2 = float(lines[-3].split(":")[1])
-    jsd = float(lines[-4].split(":")[1])
-
+    model_evidence = float(lines[-3].split(":")[1])
+    chi2 = float(lines[-4].split(":")[1])
+    jsd = float(lines[-5].split(":")[1])
     return model_names, model_weights, model_sem, model_sd, model_neff, model_rhat, \
-           model_evidence, chi2, jsd, cormap_string
+           model_evidence, chi2, jsd, cormap_string, dummy
