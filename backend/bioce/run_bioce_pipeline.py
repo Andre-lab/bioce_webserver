@@ -18,7 +18,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
-from supDummy import supcomb_models
+from backend.bioce.supDummy import supcomb_models
 
 def read_file_safe(filename, dtype="float64", skip_lines=0):
     """
